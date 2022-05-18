@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 @FeignClient(name = "User-Section-of-Oliy-Mahad")
 public interface UserFeign {
 
-    @PatchMapping("/api/user/{id}")
+    @PatchMapping("")
     boolean isExist(Long id);
 
 
