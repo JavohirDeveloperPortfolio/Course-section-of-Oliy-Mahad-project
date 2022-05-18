@@ -11,7 +11,6 @@ import uz.oliymahad.courseservice.repository.CourseRepository;
 import java.util.List;
 import java.util.Optional;
 
-
 @Service
 @RequiredArgsConstructor
 public class CourseService {
