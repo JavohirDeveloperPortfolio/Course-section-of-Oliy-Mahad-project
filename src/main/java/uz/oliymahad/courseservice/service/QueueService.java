@@ -30,6 +30,7 @@ public class QueueService implements BaseService<QueueDto> {
         if (byId.isEmpty())
             return new ApiResponse("course Not found",false);
 
+
         QueueEntity queueEntity=new QueueEntity();
         queueEntity.setUserId(queueDto.getUserId());
         queueEntity.setAppliedDate(queueDto.getAppliedDate());
