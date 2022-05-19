@@ -16,10 +16,7 @@ public class QueueEntity extends BaseEntity {
     private long userId;
 
     @Column(nullable = false)
-    private Date createdDate;
-
-    @Column(nullable = false)
-    private Date updatedDate;
+    private Date appliedDate;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
