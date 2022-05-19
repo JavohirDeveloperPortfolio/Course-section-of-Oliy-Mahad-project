@@ -1,7 +1,8 @@
 package uz.oliymahad.courseservice.service;
+import org.springframework.stereotype.Component;
 import uz.oliymahad.courseservice.dto.ApiResponse;
 
-
+@Component
 public interface BaseService<T> {
 
     ApiResponse add(T t);
