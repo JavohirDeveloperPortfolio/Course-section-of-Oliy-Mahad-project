@@ -9,5 +9,4 @@ public interface UserFeign {
     @PatchMapping("")
     boolean isExist(Long id);
 
-
 }
