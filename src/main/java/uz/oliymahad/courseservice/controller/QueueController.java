@@ -36,10 +36,10 @@ public class QueueController implements BaseController<QueueDto> {
         return ResponseEntity.status(409).body(apiResponse);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/list/{age}/{pageSize}/{id}")
     @Override
-    public ResponseEntity<?> list() {
-        return ResponseEntity.ok(queueService.getList());
+    public ResponseEntity<?> list(@PathVariable int age, @PathVariable int pageSize,@PathVariable long id) {
+        return ResponseEntity.ok(queueService.getList(age,pageSize,id));
     }
 
     @PutMapping("/edit/{id}")
