@@ -42,9 +42,19 @@ public class QueueController implements BaseController<QueueDto> {
         return ResponseEntity.ok(queueService.getList(age,pageSize,id));
     }
 
+    @GetMapping("list/{userId}")
+    public ResponseEntity<?> getUserQueues(@PathVariable long userId){
+        return ResponseEntity.ok(queueService.getUserQueues(userId));
+    }
+
+    @GetMapping("/list/{age}/{pageSize}")
+    public ResponseEntity<?> list(@PathVariable int age, @PathVariable int pageSize) {
+        return ResponseEntity.ok(queueService.getList(age,pageSize));
+    }
+
     @PutMapping("/edit/{id}")
     @Override
-    public ResponseEntity<?> edit(@PathVariable  long id ,QueueDto queueDto) {
+    public ResponseEntity<?> edit(@PathVariable  long id ,@RequestBody  QueueDto queueDto) {
         ApiResponse apiResponse = queueService.edit(id,queueDto);
         if (apiResponse.isStatus())
             return ResponseEntity.ok(apiResponse);
@@ -58,8 +68,5 @@ public class QueueController implements BaseController<QueueDto> {
         return ResponseEntity.ok(queueService.delete(id));
     }
 
-    @GetMapping("list/{userId}")
-    public ResponseEntity<?> getUserQueues(@PathVariable long userId){
-        return ResponseEntity.ok(queueService.getUserQueues(userId));
-    }
+
 }

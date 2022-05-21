@@ -51,6 +51,12 @@ public class QueueService implements BaseService<QueueDto> {
         return new ApiResponse("Success",true,all);
     }
 
+    public ApiResponse getList(int age, int pageSize) {
+        PageRequest pageable = PageRequest.of(age, pageSize, Sort.by("appliedDate").descending());
+        List<QueueEntity> all = queueRepository.findAllByCourseEntityId(pageable);
+        return new ApiResponse("Success",true,all);
+    }
+
 
 
     @Override
@@ -75,7 +81,24 @@ public class QueueService implements BaseService<QueueDto> {
 
     @Override
     public ApiResponse edit(long id, QueueDto queueDto) {
-        return null;
+        Optional<QueueEntity> optionalQueueEntity = queueRepository.findById(id);
+
+        if (optionalQueueEntity.isEmpty())
+            return new ApiResponse("Queue is not found",false);
+        QueueEntity queueEntity = optionalQueueEntity.get();
+
+        if (queueDto.getAppliedDate()==null)
+            return  new ApiResponse("AppliedDate is not found",false);
+        queueEntity.setAppliedDate(queueDto.getAppliedDate());
+
+        if (queueDto.getCourseId() != 0L){
+            Optional<CourseEntity> by = courseRepository.findById(queueDto.getCourseId());
+            if (by.isEmpty())
+                return new ApiResponse("course Not found", false);
+            queueEntity.setCourseEntity(by.get());
+        }
+
+        return new ApiResponse("Success",true,queueRepository.save(queueEntity));
     }
 
 
