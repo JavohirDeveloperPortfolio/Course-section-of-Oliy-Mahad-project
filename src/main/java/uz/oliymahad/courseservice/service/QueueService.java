@@ -1,6 +1,7 @@
 package uz.oliymahad.courseservice.service;
 
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uz.oliymahad.courseservice.dto.ApiResponse;
@@ -18,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class QueueService implements BaseService<QueueDto> {
 
+    private final ModelMapper modelMapper;
     private final QueueRepository queueRepository;
     private final CourseRepository courseRepository;
 
@@ -31,10 +33,11 @@ public class QueueService implements BaseService<QueueDto> {
             return new ApiResponse("course Not found",false);
 
         QueueEntity queueEntity=new QueueEntity();
-        queueEntity.setUserId(queueDto.getUserId());
-        queueEntity.setAppliedDate(queueDto.getAppliedDate());
+//        queueEntity.setUserId(queueDto.getUserId());
+//        queueEntity.setAppliedDate(queueDto.getAppliedDate());
         queueEntity.setOrderEnum(OrderEnum.PENDING);
         queueEntity.setCourseEntity(byId.get());
+        queueEntity = modelMapper.map(queueDto, QueueEntity.class);
         QueueEntity save = queueRepository.save(queueEntity);
         return new ApiResponse("Success",true,save);
     }

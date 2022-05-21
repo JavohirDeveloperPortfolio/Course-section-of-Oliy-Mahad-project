@@ -1,6 +1,7 @@
 package uz.oliymahad.courseservice.service;
 
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import uz.oliymahad.courseservice.dto.ApiResponse;
 import uz.oliymahad.courseservice.dto.CourseDto;
@@ -14,6 +15,9 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CourseService {
+
+    private final ModelMapper modelMapper;
+
     private final UserFeign userFeign;
     private final CourseRepository courseRepository;
 
@@ -27,11 +31,12 @@ public class CourseService {
             return new ApiResponse("Course already exist",false);
         }
         CourseEntity courseEntity = new CourseEntity();
-        courseEntity.setName(courseDto.getName());
-        courseEntity.setDescription(courseDto.getDescription());
-        courseEntity.setPrice(courseDto.getPrice());
-        courseEntity.setAdminId(courseDto.getAdminId());
-        courseEntity.setDuration(courseDto.getDuration());
+//        courseEntity.setName(courseDto.getName());
+//        courseEntity.setDescription(courseDto.getDescription());
+//        courseEntity.setPrice(courseDto.getPrice());
+//        courseEntity.setAdminId(courseDto.getAdminId());
+//        courseEntity.setDuration(courseDto.getDuration());
+        courseEntity = modelMapper.map(courseDto, CourseEntity.class);
         courseRepository.save(courseEntity);
         return new ApiResponse("Successfully saved",true);
     }
@@ -56,10 +61,11 @@ public class CourseService {
             return new ApiResponse("Course not found",false);
         }
         CourseEntity courseEntity = optionalCourse.get();
-        courseEntity.setDuration(courseDto.getDuration());
-        courseEntity.setPrice(courseDto.getPrice());
-        courseEntity.setDescription(courseDto.getDescription());
-        courseEntity.setName(courseDto.getName());
+//        courseEntity.setDuration(courseDto.getDuration());
+//        courseEntity.setPrice(courseDto.getPrice());
+//        courseEntity.setDescription(courseDto.getDescription());
+//        courseEntity.setName(courseDto.getName());
+        courseEntity = modelMapper.map(courseDto, CourseEntity.class);
         courseRepository.save(courseEntity);
         return new ApiResponse("Successfully updated",true);
     }
