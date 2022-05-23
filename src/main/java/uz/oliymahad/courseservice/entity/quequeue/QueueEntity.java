@@ -20,7 +20,7 @@ import java.util.Date;
 public class QueueEntity extends BaseEntity {
 
     @Column(nullable = false)
-    private long userId;
+    private Long userId;
 
     @Column(nullable = false)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -28,10 +28,14 @@ public class QueueEntity extends BaseEntity {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime appliedDate;
 
+
+    @Enumerated(EnumType.STRING)
+    private EGender gender;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private OrderEnum orderEnum;
+    private Status status;
 
     @ManyToOne
-    private CourseEntity courseEntity;
+    private CourseEntity course;
 }

@@ -1,65 +1,50 @@
 package uz.oliymahad.courseservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.oliymahad.courseservice.dto.ApiResponse;
 import uz.oliymahad.courseservice.dto.QueueDto;
 import uz.oliymahad.courseservice.service.QueueService;
 
-import javax.persistence.StoredProcedureParameter;
+import static uz.oliymahad.courseservice.controller.BaseController.API;
+
 
 @RestController
-@RequestMapping("/api/queue")
+@RequestMapping(API +"/queue")
 @RequiredArgsConstructor
-public class QueueController implements BaseController<QueueDto> {
+public class QueueController implements BaseController {
 
     private final QueueService queueService;
 
-    @PostMapping("/add")
-    @Override
-    public ResponseEntity<?> add(@RequestBody  QueueDto queueDto) {
-        ApiResponse apiResponse = queueService.add(queueDto);
-        if (apiResponse.isStatus())
-            return ResponseEntity.ok(apiResponse);
-
-        return ResponseEntity.status(409).body(apiResponse);
+    @PostMapping(ADD)
+    public ResponseEntity<?> addQueue(@RequestBody QueueDto queueDto) {
+        ApiResponse<Void> apiResponse = queueService.add(queueDto);
+        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.CONFLICT).body(apiResponse);
     }
 
-    @GetMapping("/get/{id}")
-    @Override
-    public ResponseEntity<?> get(@PathVariable long id) {
-        ApiResponse apiResponse = queueService.get(id);
-        if (apiResponse.isStatus())
-            return ResponseEntity.ok(apiResponse);
-
-        return ResponseEntity.status(409).body(apiResponse);
-    }
-
-    @GetMapping("/list")
-    @Override
-    public ResponseEntity<?> list() {
+    @GetMapping(LIST)
+    public ResponseEntity<?> getList () {
         return ResponseEntity.ok(queueService.getList());
     }
 
-    @PutMapping("/edit/{id}")
-    @Override
-    public ResponseEntity<?> edit(@PathVariable  long id ,QueueDto queueDto) {
-        ApiResponse apiResponse = queueService.edit(id,queueDto);
-        if (apiResponse.isStatus())
-            return ResponseEntity.ok(apiResponse);
-
-        return ResponseEntity.status(409).body(apiResponse);
+    @GetMapping(GET + "/{id}")
+    public ResponseEntity<?> getQueue (@PathVariable Long id) {
+        ApiResponse<QueueDto> apiResponse = queueService.get(id);
+        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(apiResponse);
     }
 
-    @DeleteMapping("/delete/{id}")
-    @Override
-    public ResponseEntity<?> delete(@PathVariable  long id) {
-        return ResponseEntity.ok(queueService.delete(id));
+    @PutMapping(UPDATE + "/{id}")
+    public ResponseEntity<?> updateQueue (@PathVariable Long id, @RequestBody QueueDto queueDto) {
+        ApiResponse<Void> apiResponse = queueService.edit(id, queueDto);
+        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(apiResponse);
     }
 
-    @GetMapping("list/{userId}")
-    public ResponseEntity<?> getUserQueues(@PathVariable long userId){
-        return ResponseEntity.ok(queueService.getUserQueues(userId));
+    @DeleteMapping(DELETE + "/{id}")
+    public ResponseEntity<?> deleteQueue (@PathVariable Long id) {
+        ApiResponse<Void> apiResponse = queueService.delete(id);
+        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(apiResponse);
     }
+
 }
