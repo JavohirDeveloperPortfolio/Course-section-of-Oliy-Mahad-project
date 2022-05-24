@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import uz.oliymahad.courseservice.dto.ApiResponse;
+import uz.oliymahad.courseservice.dto.FilterQueueDTO;
 import uz.oliymahad.courseservice.dto.QueueDto;
 import uz.oliymahad.courseservice.dto.Response;
 import uz.oliymahad.courseservice.entity.course.CourseEntity;
@@ -78,5 +79,31 @@ public class QueueService implements BaseService<QueueDto,Long,QueueEntity> , Re
         QueueEntity queueEntity = optionalQueue.get();
         modelMapper.map(queueDto,queueEntity);
         return new ApiResponse<>(SUCCESSFULLY_UPDATED,true);
+    }
+
+    public ApiResponse<List<Long>> getUserCourseQueue(Long userId,Long courseId){
+        List<Long> userCourseQueue = queueRepository.getUserCourseQueue(userId, courseId);
+        return new ApiResponse<>(SUCCESS,true,userCourseQueue);
+    }
+
+    public ApiResponse<List<Long>> getUsersByFilter(FilterQueueDTO filterQueueDTO){
+        List<Long> users = filterFilter(filterQueueDTO);
+        return new ApiResponse<>(SUCCESS,true,users);
+    }
+
+
+
+
+    private List<Long> filterFilter(FilterQueueDTO filterQueueDTO){
+
+        if(filterQueueDTO.getGender() == null && filterQueueDTO.getStatus() == null)
+            return queueRepository.filterByCourseLimit(filterQueueDTO.getCourseId(),filterQueueDTO.getLimit());
+        else if(filterQueueDTO.getStatus() == null)
+            return queueRepository.filterByCourseGenderLimit(filterQueueDTO.getCourseId(),filterQueueDTO.getGender(),filterQueueDTO.getLimit());
+        else if(filterQueueDTO.getGender() == null)
+            return queueRepository.filterByCourseStatusLimit(filterQueueDTO.getCourseId(), filterQueueDTO.getStatus(), filterQueueDTO.getLimit());
+        else
+            return queueRepository.filterByCourseStatusGenderLimit(filterQueueDTO.getCourseId(),filterQueueDTO.getStatus(),filterQueueDTO.getGender(),filterQueueDTO.getLimit());
+
     }
 }

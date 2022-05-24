@@ -5,8 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.oliymahad.courseservice.dto.ApiResponse;
+import uz.oliymahad.courseservice.dto.FilterQueueDTO;
+import uz.oliymahad.courseservice.dto.GetUserCourseQueueDTO;
 import uz.oliymahad.courseservice.dto.QueueDto;
 import uz.oliymahad.courseservice.service.QueueService;
+
+import java.util.List;
 
 import static uz.oliymahad.courseservice.controller.BaseController.API;
 
@@ -44,6 +48,18 @@ public class QueueController implements BaseController {
     @DeleteMapping(DELETE + "/{id}")
     public ResponseEntity<?> deleteQueue (@PathVariable Long id) {
         ApiResponse<Void> apiResponse = queueService.delete(id);
+        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(apiResponse);
+    }
+
+    @GetMapping(GET_USER_COURSE_QUEUE)
+    public ResponseEntity<?> getUserCourseQueue( @RequestBody GetUserCourseQueueDTO getUserCourseQueueDTO){
+        ApiResponse<List<Long>> apiResponse = queueService.getUserCourseQueue(getUserCourseQueueDTO.getUserId(), getUserCourseQueueDTO.getCourseId());
+        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(apiResponse);
+    }
+
+    @GetMapping(GET_USERS_BY_FILTER)
+    public ResponseEntity<?> getUsersByFilter(@RequestBody FilterQueueDTO filterQueueDTO){
+        ApiResponse<List<Long>> apiResponse = queueService.getUsersByFilter(filterQueueDTO);
         return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(apiResponse);
     }
 

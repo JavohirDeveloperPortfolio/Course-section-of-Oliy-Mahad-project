@@ -10,4 +10,5 @@ public interface Response {
     String USER = "User";
     String COURSE = "Course";
     String QUEUE = "Queue";
+    String SUCCESS = "Success";
 }
