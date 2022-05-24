@@ -15,5 +15,5 @@ public class CourseDto {
     private String description;
     private double price;
     private float duration;
-    private Long AdminId;
+    private Long adminId;
 }
