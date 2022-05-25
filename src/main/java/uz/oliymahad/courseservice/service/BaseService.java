@@ -20,4 +20,5 @@ public interface BaseService<D,K,E,P> {
     ApiResponse<D> get(K id);
     ApiResponse<Void> delete(K id);
     ApiResponse<Void> edit(K id, D d);
+
 }
