@@ -2,25 +2,32 @@ package uz.oliymahad.courseservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uz.oliymahad.courseservice.dto.ApiResponse;
-import uz.oliymahad.courseservice.dto.FilterQueueDTO;
+import uz.oliymahad.courseservice.dto.FilterQueueForGroupsDTO;
 import uz.oliymahad.courseservice.dto.QueueDto;
 import uz.oliymahad.courseservice.dto.Response;
 import uz.oliymahad.courseservice.entity.course.CourseEntity;
-import uz.oliymahad.courseservice.entity.quequeue.EGender;
 import uz.oliymahad.courseservice.entity.quequeue.QueueEntity;
 import uz.oliymahad.courseservice.entity.quequeue.Status;
 import uz.oliymahad.courseservice.feign.UserFeign;
 import uz.oliymahad.courseservice.repository.CourseRepository;
 import uz.oliymahad.courseservice.repository.QueueRepository;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class QueueService implements BaseService<QueueDto,Long,QueueEntity> , Response {
+public class QueueService implements BaseService<QueueDto,Long,QueueEntity,Pageable> , Response {
 
     private final QueueRepository queueRepository;
     private final CourseRepository courseRepository;
@@ -46,8 +53,9 @@ public class QueueService implements BaseService<QueueDto,Long,QueueEntity> , Re
     }
 
     @Override
-    public ApiResponse<List<QueueEntity>> getList() {
-        return new ApiResponse<>(DATA_LIST,true,queueRepository.findAll());
+    public ApiResponse<Page<QueueEntity>> getList(Pageable page) {
+        return new ApiResponse<>(DATA_LIST,true, queueRepository.findAll(page));
+
     }
 
     @Override
@@ -86,24 +94,36 @@ public class QueueService implements BaseService<QueueDto,Long,QueueEntity> , Re
         return new ApiResponse<>(SUCCESS,true,userCourseQueue);
     }
 
-    public ApiResponse<List<Long>> getUsersByFilter(FilterQueueDTO filterQueueDTO){
-        List<Long> users = filterFilter(filterQueueDTO);
+    public ApiResponse<List<Long>> getUsersByFilter(FilterQueueForGroupsDTO filterQueueDTO){
+        List<Long> users = queueRepository.filterByCourseStatusGenderLimitForGroups(filterQueueDTO.getCourseId(), filterQueueDTO.getStatus(), filterQueueDTO.getGender(),filterQueueDTO.getLimit());
         return new ApiResponse<>(SUCCESS,true,users);
     }
 
 
-
-
-    private List<Long> filterFilter(FilterQueueDTO filterQueueDTO){
-
-        if(filterQueueDTO.getGender() == null && filterQueueDTO.getStatus() == null)
-            return queueRepository.filterByCourseLimit(filterQueueDTO.getCourseId(),filterQueueDTO.getLimit());
-        else if(filterQueueDTO.getStatus() == null)
-            return queueRepository.filterByCourseGenderLimit(filterQueueDTO.getCourseId(),filterQueueDTO.getGender(),filterQueueDTO.getLimit());
-        else if(filterQueueDTO.getGender() == null)
-            return queueRepository.filterByCourseStatusLimit(filterQueueDTO.getCourseId(), filterQueueDTO.getStatus(), filterQueueDTO.getLimit());
-        else
-            return queueRepository.filterByCourseStatusGenderLimit(filterQueueDTO.getCourseId(),filterQueueDTO.getStatus(),filterQueueDTO.getGender(),filterQueueDTO.getLimit());
+    public ApiResponse<List<QueueEntity>> getQueueByFilter(Long userId,String gender,String status,Long courseId,String appliedDate){
+        String appliedDateAfter = null;
+        if(appliedDate != null) {
+             appliedDateAfter = getDayAfterDay(appliedDate);
+        }
+        List<QueueEntity> queueByFilter = queueRepository.getQueueByFilter(userId, gender, status, courseId);
+        return new ApiResponse<>(SUCCESS,true,queueByFilter);
 
     }
+
+
+    private String getDayAfterDay(String day){
+        String sDay = day.substring(0, 10);
+        Date date = null;
+        try {
+           date =  new SimpleDateFormat("yyyy-MM-dd").parse(sDay);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        long l = date.getTime() + 86400000;
+        Date date1 = new Date(l);
+        String afterDay = new SimpleDateFormat("yyyy-MM-dd").format(date1);
+        return afterDay;
+    }
+
+
 }

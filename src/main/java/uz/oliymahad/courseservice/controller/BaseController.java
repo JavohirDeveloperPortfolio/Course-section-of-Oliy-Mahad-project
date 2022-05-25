@@ -13,4 +13,5 @@ public interface BaseController {
     String API = "/api";
     String GET_USER_COURSE_QUEUE = "/getUserQueue";
     String GET_USERS_BY_FILTER = "/getUsersByFilter";
+    String GET_QUEUES_BY_FILTER = "/getQueuesByFilter";
 }
