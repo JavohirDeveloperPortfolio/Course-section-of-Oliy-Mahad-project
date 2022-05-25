@@ -27,7 +27,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class QueueService implements BaseService<QueueDto,Long,QueueEntity> , Response {
+public class QueueService implements BaseService<QueueDto,Long,QueueEntity,Pageable> , Response {
 
     private final QueueRepository queueRepository;
     private final CourseRepository courseRepository;
@@ -53,13 +53,9 @@ public class QueueService implements BaseService<QueueDto,Long,QueueEntity> , Re
     }
 
     @Override
-    public ApiResponse<List<QueueEntity>> getList() {
-        return null;
-    }
-
-
     public ApiResponse<Page<QueueEntity>> getList(Pageable page) {
         return new ApiResponse<>(DATA_LIST,true, queueRepository.findAll(page));
+
     }
 
     @Override

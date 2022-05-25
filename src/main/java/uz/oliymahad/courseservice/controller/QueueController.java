@@ -29,7 +29,7 @@ public class QueueController implements BaseController {
     @PostMapping(ADD)
     public ResponseEntity<?> addQueue(@RequestBody QueueDto queueDto) {
         ApiResponse<Void> apiResponse = queueService.add(queueDto);
-        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.CONFLICT).body(apiResponse);
+        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.CREATED : HttpStatus.CONFLICT).body(apiResponse);
     }
 
     @GetMapping(LIST)
@@ -54,7 +54,7 @@ public class QueueController implements BaseController {
     @DeleteMapping(DELETE + "/{id}")
     public ResponseEntity<?> deleteQueue (@PathVariable Long id) {
         ApiResponse<Void> apiResponse = queueService.delete(id);
-        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(apiResponse);
+        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.NO_CONTENT : HttpStatus.NOT_FOUND).body(apiResponse);
     }
 
     @GetMapping(GET_USER_COURSE_QUEUE)
