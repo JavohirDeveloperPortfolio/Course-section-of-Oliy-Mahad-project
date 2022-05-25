@@ -1,57 +1,49 @@
 package uz.oliymahad.courseservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.oliymahad.courseservice.dto.ApiResponse;
 import uz.oliymahad.courseservice.dto.CourseDto;
 import uz.oliymahad.courseservice.service.CourseService;
 
+import static uz.oliymahad.courseservice.controller.BaseController.API;
+
 @RestController
-@RequestMapping("/api/course")
+@RequestMapping(API+"/course")
 @RequiredArgsConstructor
-public class CourseController {
+public class CourseController implements BaseController{
 
     private final CourseService courseService;
 
-    @PostMapping("/add")
+    @PostMapping(ADD)
     public ResponseEntity<?> addCourse (@RequestBody CourseDto courseDto) {
-        ApiResponse apiResponse = courseService.addCourse(courseDto);
-        if (apiResponse.isStatus()) {
-            return ResponseEntity.ok(apiResponse);
-        }
-        return ResponseEntity.status(409).body(apiResponse);
+        ApiResponse<Void> apiResponse = courseService.add(courseDto);
+        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.CREATED : HttpStatus.CONFLICT).body(apiResponse);
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<?> getCourseList () {
-        return ResponseEntity.ok(courseService.getCourses());
+    @GetMapping(LIST)
+    public ResponseEntity<?> getCourseList (Pageable pageable) {
+        return ResponseEntity.ok(courseService.getList(pageable));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(GET + "/{id}")
     public ResponseEntity<?> getCourse (@PathVariable Long id) {
-        ApiResponse apiResponse = courseService.getCourseById(id);
-        if (apiResponse.isStatus()) {
-            return ResponseEntity.ok(apiResponse);
-        }
-        return ResponseEntity.status(409).body(apiResponse);
+        ApiResponse<CourseDto> apiResponse = courseService.get(id);
+        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(apiResponse);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping(UPDATE+"/{id}")
     public ResponseEntity<?> updateCourse(@PathVariable Long id, @RequestBody CourseDto courseDto) {
-        ApiResponse apiResponse = courseService.updateCourse(id, courseDto);
-        if (apiResponse.isStatus()) {
-            return ResponseEntity.ok(apiResponse);
-        }
-        return ResponseEntity.status(409).body(apiResponse);
+        ApiResponse<Void> apiResponse = courseService.edit(id, courseDto);
+        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(apiResponse);
     }
 
-    @DeleteMapping("/deleteCourse/{id}")
+    @DeleteMapping(DELETE+"/{id}")
     public ResponseEntity<?> deleteCourse (@PathVariable Long id) {
-        ApiResponse apiResponse = courseService.deleteCourse(id);
-        if (apiResponse.isStatus()) {
-            return ResponseEntity.ok(apiResponse);
-        }
-        return ResponseEntity.status(409).body(apiResponse);
+        ApiResponse<Void> apiResponse = courseService.delete(id);
+        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.NO_CONTENT : HttpStatus.NOT_FOUND).body(apiResponse);
     }
 }

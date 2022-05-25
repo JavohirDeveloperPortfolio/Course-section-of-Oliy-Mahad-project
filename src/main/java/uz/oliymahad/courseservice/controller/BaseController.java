@@ -4,11 +4,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-public interface BaseController<T> {
-    ResponseEntity<?> add(T t);
-    ResponseEntity<?> get(long id);
-    ResponseEntity<?>list(int age, int pageSize, long id);
-    ResponseEntity<?>edit(long id,T t);
-    ResponseEntity<?>delete(long id);
+public interface BaseController {
+    String ADD = "/add";
+    String GET = "/get";
+    String LIST = "/list";
+    String UPDATE = "/update";
+    String DELETE = "/delete";
+    String API = "/api";
 }

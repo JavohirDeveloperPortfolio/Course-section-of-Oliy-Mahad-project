@@ -1,77 +1,78 @@
 package uz.oliymahad.courseservice.service;
 
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uz.oliymahad.courseservice.dto.ApiResponse;
 import uz.oliymahad.courseservice.dto.CourseDto;
+import uz.oliymahad.courseservice.dto.Response;
 import uz.oliymahad.courseservice.entity.course.CourseEntity;
 import uz.oliymahad.courseservice.feign.UserFeign;
 import uz.oliymahad.courseservice.repository.CourseRepository;
 
-import java.util.List;
 import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
-public class CourseService {
+public class CourseService implements BaseService<CourseDto,Long,CourseEntity, Pageable> , Response {
     private final UserFeign userFeign;
     private final CourseRepository courseRepository;
+    private final ModelMapper modelMapper;
 
-    public ApiResponse addCourse (CourseDto courseDto) {
-        boolean exist = userFeign.isExist(courseDto.getAdminId());
-        if (!exist) {
-            return new ApiResponse("User not found",false);
+    @Override
+
+
+    public ApiResponse<Void> add(CourseDto courseDto) {
+//        boolean exist = userFeign.isExist(courseDto.getAdminId());
+//        if (exist) {
+//            return new ApiResponse<>(USER + NOT_FOUND,false);
+//        }
+        boolean exists = courseRepository.existsByName(courseDto.getName());
+        if (exists) {
+            return new ApiResponse<>(COURSE + ALREADY_EXIST,false);
         }
-        boolean existsByName = courseRepository.existsByName(courseDto.getName());
-        if (existsByName) {
-            return new ApiResponse("Course already exist",false);
-        }
-        CourseEntity courseEntity = new CourseEntity();
-        courseEntity.setName(courseDto.getName());
-        courseEntity.setDescription(courseDto.getDescription());
-        courseEntity.setPrice(courseDto.getPrice());
-        courseEntity.setAdminId(courseDto.getAdminId());
-        courseEntity.setDuration(courseDto.getDuration());
+        CourseEntity courseEntity = modelMapper.map(courseDto, CourseEntity.class);
         courseRepository.save(courseEntity);
-        return new ApiResponse("Successfully saved",true);
+        return new ApiResponse<>(SUCCESSFULLY_SAVED,true);
     }
 
-    public ApiResponse getCourses () {
-        List<CourseEntity> courseEntities = courseRepository.findAll();
-        return new ApiResponse("Course List",true,courseEntities);
+    @Override
+    public ApiResponse<Page<CourseEntity>> getList(Pageable pageable) {
+        return new ApiResponse<>(DATA_LIST,true,courseRepository.findAll(pageable));
     }
-    
-    public ApiResponse getCourseById (Long id) {
+
+
+    @Override
+    public ApiResponse<CourseDto> get(Long id) {
         Optional<CourseEntity> optionalCourse = courseRepository.findById(id);
         if (optionalCourse.isEmpty()) {
-            return new ApiResponse("Course not found",false);
+            return new ApiResponse<>(COURSE+NOT_FOUND,false);
         }
-        CourseEntity courseEntity = optionalCourse.get();
-        return new ApiResponse("Course",true,courseEntity);
+        CourseDto courseDto = modelMapper.map(optionalCourse.get(), CourseDto.class);
+        return new ApiResponse<>(COURSE,true,courseDto);
     }
 
-    public ApiResponse updateCourse(Long id, CourseDto courseDto) {
+    @Override
+    public ApiResponse<Void> delete(Long id) {
         Optional<CourseEntity> optionalCourse = courseRepository.findById(id);
         if (optionalCourse.isEmpty()) {
-            return new ApiResponse("Course not found",false);
-        }
-        CourseEntity courseEntity = optionalCourse.get();
-        courseEntity.setDuration(courseDto.getDuration());
-        courseEntity.setPrice(courseDto.getPrice());
-        courseEntity.setDescription(courseDto.getDescription());
-        courseEntity.setName(courseDto.getName());
-        courseRepository.save(courseEntity);
-        return new ApiResponse("Successfully updated",true);
-    }
-
-    public ApiResponse deleteCourse(Long id) {
-        Optional<CourseEntity> optionalCourse = courseRepository.findById(id);
-        if (optionalCourse.isEmpty()) {
-            return new ApiResponse("Course not found",false);
+            return new ApiResponse<>(COURSE + NOT_FOUND,false);
         }
         CourseEntity courseEntity = optionalCourse.get();
         courseRepository.delete(courseEntity);
-        return new ApiResponse("Successfully deleted",true);
+        return new ApiResponse<>(SUCCESSFULLY_DELETED,true);
     }
 
+    @Override
+    public ApiResponse<Void> edit(Long id, CourseDto courseDto) {
+        Optional<CourseEntity> optionalCourse = courseRepository.findById(id);
+        if (optionalCourse.isEmpty()) {
+            return new ApiResponse<>(COURSE + NOT_FOUND,false);
+        }
+        CourseEntity courseEntity = optionalCourse.get();
+        modelMapper.map(courseDto,courseEntity);
+        courseRepository.save(courseEntity);
+        return new ApiResponse<>(SUCCESSFULLY_UPDATED,true);
+    }
 }

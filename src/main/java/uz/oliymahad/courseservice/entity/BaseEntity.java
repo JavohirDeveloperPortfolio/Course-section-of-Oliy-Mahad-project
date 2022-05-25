@@ -12,7 +12,6 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Getter
-@Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public class BaseEntity {
@@ -21,20 +20,21 @@ public class BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @CreatedBy
-    @Column(updatable = false)
-    private String createdBy;
+//    @CreatedBy
+//    @Column(updatable = false)
+//    private String createdBy;
+//
+//    @LastModifiedBy
+//    private String updatedBy;
+//
+//    @CreatedDate
+//    @Column(updatable = false)
+//    private Date createdDate;
+//
+//    @LastModifiedDate
+//    private Date updatedDate;
+//
+//    private boolean isActive = true;
 
-    @LastModifiedBy
-    private String updatedBy;
-
-    @CreatedDate
-    @Column(updatable = false)
-    private Date createdDate;
-
-    @LastModifiedDate
-    private Date updatedDate;
-
-    private boolean isActive;
 
 }

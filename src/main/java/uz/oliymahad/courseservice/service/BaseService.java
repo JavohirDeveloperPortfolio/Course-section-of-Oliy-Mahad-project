@@ -1,13 +1,23 @@
 package uz.oliymahad.courseservice.service;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import uz.oliymahad.courseservice.dto.ApiResponse;
 
-@Component
-public interface BaseService<T> {
+import java.util.List;
 
-    ApiResponse add(T t);
-    ApiResponse getList(int age, int pageSize,long CourseId);
-    ApiResponse get(long id);
-    ApiResponse delete(long id);
-    ApiResponse edit(long id, T t);
+/**
+ * @param <D> Dto
+ * @param <K> Id Long
+ * @param <E> Id Long
+ * @param <P> Pageable pageable
+ */
+
+@Component
+public interface BaseService<D,K,E,P> {
+
+    ApiResponse<Void> add(D d);
+    ApiResponse<Page<E>> getList(P p);
+    ApiResponse<D> get(K id);
+    ApiResponse<Void> delete(K id);
+    ApiResponse<Void> edit(K id, D d);
 }
