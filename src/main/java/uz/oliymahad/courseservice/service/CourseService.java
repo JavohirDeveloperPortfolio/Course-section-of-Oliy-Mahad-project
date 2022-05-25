@@ -2,6 +2,8 @@ package uz.oliymahad.courseservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uz.oliymahad.courseservice.dto.ApiResponse;
 import uz.oliymahad.courseservice.dto.CourseDto;
@@ -10,16 +12,17 @@ import uz.oliymahad.courseservice.entity.course.CourseEntity;
 import uz.oliymahad.courseservice.feign.UserFeign;
 import uz.oliymahad.courseservice.repository.CourseRepository;
 
-import java.util.List;
 import java.util.Optional;
 @Service
 @RequiredArgsConstructor
-public class CourseService implements BaseService<CourseDto,Long,CourseEntity> , Response {
+public class CourseService implements BaseService<CourseDto,Long,CourseEntity, Pageable> , Response {
     private final UserFeign userFeign;
     private final CourseRepository courseRepository;
     private final ModelMapper modelMapper;
 
     @Override
+
+
     public ApiResponse<Void> add(CourseDto courseDto) {
 //        boolean exist = userFeign.isExist(courseDto.getAdminId());
 //        if (exist) {
@@ -35,9 +38,10 @@ public class CourseService implements BaseService<CourseDto,Long,CourseEntity> ,
     }
 
     @Override
-    public ApiResponse<List<CourseEntity>> getList() {
-        return new ApiResponse<>(DATA_LIST,true,courseRepository.findAll());
+    public ApiResponse<Page<CourseEntity>> getList(Pageable pageable) {
+        return new ApiResponse<>(DATA_LIST,true,courseRepository.findAll(pageable));
     }
+
 
     @Override
     public ApiResponse<CourseDto> get(Long id) {

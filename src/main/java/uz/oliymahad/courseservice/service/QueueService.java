@@ -2,24 +2,24 @@ package uz.oliymahad.courseservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uz.oliymahad.courseservice.dto.ApiResponse;
 import uz.oliymahad.courseservice.dto.QueueDto;
 import uz.oliymahad.courseservice.dto.Response;
 import uz.oliymahad.courseservice.entity.course.CourseEntity;
-import uz.oliymahad.courseservice.entity.quequeue.EGender;
 import uz.oliymahad.courseservice.entity.quequeue.QueueEntity;
 import uz.oliymahad.courseservice.entity.quequeue.Status;
 import uz.oliymahad.courseservice.feign.UserFeign;
 import uz.oliymahad.courseservice.repository.CourseRepository;
 import uz.oliymahad.courseservice.repository.QueueRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class QueueService implements BaseService<QueueDto,Long,QueueEntity> , Response {
+public class QueueService implements BaseService<QueueDto,Long,QueueEntity, Pageable> , Response {
 
     private final QueueRepository queueRepository;
     private final CourseRepository courseRepository;
@@ -45,9 +45,10 @@ public class QueueService implements BaseService<QueueDto,Long,QueueEntity> , Re
     }
 
     @Override
-    public ApiResponse<List<QueueEntity>> getList() {
-        return new ApiResponse<>(DATA_LIST,true,queueRepository.findAll());
+    public ApiResponse<Page<QueueEntity>> getList(Pageable pageable) {
+        return new ApiResponse<>(DATA_LIST,true,queueRepository.findAll(pageable));
     }
+
 
     @Override
     public ApiResponse<QueueDto> get(Long id) {

@@ -1,6 +1,7 @@
 package uz.oliymahad.courseservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +22,12 @@ public class QueueController implements BaseController {
     @PostMapping(ADD)
     public ResponseEntity<?> addQueue(@RequestBody QueueDto queueDto) {
         ApiResponse<Void> apiResponse = queueService.add(queueDto);
-        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.CONFLICT).body(apiResponse);
+        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.CREATED : HttpStatus.CONFLICT).body(apiResponse);
     }
 
     @GetMapping(LIST)
-    public ResponseEntity<?> getList () {
-        return ResponseEntity.ok(queueService.getList());
+    public ResponseEntity<?> getList (Pageable pageable) {
+        return ResponseEntity.ok(queueService.getList(pageable));
     }
 
     @GetMapping(GET + "/{id}")
@@ -44,7 +45,7 @@ public class QueueController implements BaseController {
     @DeleteMapping(DELETE + "/{id}")
     public ResponseEntity<?> deleteQueue (@PathVariable Long id) {
         ApiResponse<Void> apiResponse = queueService.delete(id);
-        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(apiResponse);
+        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.NO_CONTENT : HttpStatus.NOT_FOUND).body(apiResponse);
     }
 
 }
