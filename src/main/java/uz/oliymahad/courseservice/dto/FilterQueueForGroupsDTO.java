@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FilterQueueDTO {
+public class FilterQueueForGroupsDTO {
     private Long courseId;
     private String status;
     private String gender;
