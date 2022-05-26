@@ -30,8 +30,8 @@ public class QueueEntity extends BaseEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private OrderEnum orderEnum;
+    private Status status;
 
     @ManyToOne
-    private CourseEntity courseEntity;
+    private CourseEntity course;
 }
