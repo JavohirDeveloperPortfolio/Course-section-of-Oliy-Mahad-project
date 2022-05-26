@@ -85,7 +85,10 @@ public class QueueService implements BaseService<QueueDto,Long,QueueEntity,Pagea
             return new ApiResponse<>(QUEUE + NOT_FOUND,false);
         }
         QueueEntity queueEntity = optionalQueue.get();
+        if(queueDto.getAppliedDate() == null)
+            queueDto.setAppliedDate(queueEntity.getAppliedDate());
         modelMapper.map(queueDto,queueEntity);
+        queueRepository.save(queueEntity);
         return new ApiResponse<>(SUCCESSFULLY_UPDATED,true);
     }
 
