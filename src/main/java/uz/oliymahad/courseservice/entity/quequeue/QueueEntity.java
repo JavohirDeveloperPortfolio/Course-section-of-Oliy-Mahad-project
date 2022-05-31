@@ -16,10 +16,10 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Setter
-@Entity
+@Entity(name = "queue_entity")
 public class QueueEntity extends BaseEntity {
 
-    @Column(nullable = false)
+    @Column(nullable = false,name = "user_id")
     private Long userId;
 
     @Column(nullable = false)

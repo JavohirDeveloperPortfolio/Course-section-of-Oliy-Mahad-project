@@ -20,7 +20,13 @@ public class GroupController implements BaseController{
 
     @PostMapping("/add")
     public ResponseEntity<?> add (@RequestBody GroupRequestDto groupRequestDto) {
-        ApiResponse<Void> apiResponse = groupService.add(groupRequestDto);
+        ApiResponse<Void> apiResponse = groupService.addGroup(groupRequestDto);
+        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.CONFLICT).body(apiResponse);
+    }
+
+    @GetMapping("/getAllGroups")
+    public ResponseEntity<?> getAllGroups () {
+        ApiResponse<Void> apiResponse = groupService.getAllGroups();
         return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.CONFLICT).body(apiResponse);
     }
 
