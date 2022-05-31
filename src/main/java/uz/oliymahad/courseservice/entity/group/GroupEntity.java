@@ -17,8 +17,9 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@Entity(name = "group_entity")
-public class GroupEntity extends BaseEntity {
+@Entity
+@Table(name = "group_entity")
+    public class GroupEntity extends BaseEntity {
 
     private String name;
 
@@ -27,16 +28,15 @@ public class GroupEntity extends BaseEntity {
     @Enumerated
     private EGender type ;
 
-    @CreatedDate
-    @Column(name = "created_date")
-    private Date createdDate ;
+    @Enumerated
+    private GroupStatusEnum groupStatus ;
+
+    private Date startDate;
 
     @ManyToOne
-    @Column(name = "course_id")
-    private CourseEntity courseId ;
+    private CourseEntity course ;
 
-    @OneToMany(mappedBy = "groupId")
-    @Column(name = "group_users")
+    @OneToMany(mappedBy = "group")
     private List<GroupUsersEntity> groupUsers;
 
 }
