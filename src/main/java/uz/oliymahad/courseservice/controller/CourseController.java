@@ -35,6 +35,12 @@ public class CourseController implements BaseController{
         return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(apiResponse);
     }
 
+    @GetMapping(GET + "{name}")
+    public ResponseEntity<?> getCourseByName (@RequestParam(name = "name") String name) {
+        ApiResponse<CourseDto> apiResponse = courseService.getByName(name);
+        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(apiResponse);
+    }
+
     @PutMapping(UPDATE+"/{id}")
     public ResponseEntity<?> updateCourse(@PathVariable Long id, @RequestBody CourseDto courseDto) {
         ApiResponse<Void> apiResponse = courseService.edit(id, courseDto);

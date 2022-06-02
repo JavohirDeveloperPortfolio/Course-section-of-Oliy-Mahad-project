@@ -24,10 +24,6 @@ public class CourseService implements BaseService<CourseDto,Long,CourseEntity, P
 
 
     public ApiResponse<Void> add(CourseDto courseDto) {
-//        boolean exist = userFeign.isExist(courseDto.getAdminId());
-//        if (exist) {
-//            return new ApiResponse<>(USER + NOT_FOUND,false);
-//        }
         boolean exists = courseRepository.existsByName(courseDto.getName());
         if (exists) {
             return new ApiResponse<>(COURSE + ALREADY_EXIST,false);
@@ -74,5 +70,14 @@ public class CourseService implements BaseService<CourseDto,Long,CourseEntity, P
         modelMapper.map(courseDto,courseEntity);
         courseRepository.save(courseEntity);
         return new ApiResponse<>(SUCCESSFULLY_UPDATED,true);
+    }
+
+    public ApiResponse<CourseDto> getByName (String name) {
+        Optional<CourseEntity> optionalCourseEntity = courseRepository.findByName(name);
+        if (optionalCourseEntity.isEmpty()) {
+            return new ApiResponse<>(COURSE + NOT_FOUND,false);
+        }
+        CourseDto courseDto = modelMapper.map(optionalCourseEntity.get(), CourseDto.class);
+        return new ApiResponse<>(COURSE,true,courseDto);
     }
 }
