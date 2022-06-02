@@ -2,6 +2,9 @@ package uz.oliymahad.courseservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uz.oliymahad.courseservice.dto.ApiResponse;
 import uz.oliymahad.courseservice.dto.FilterQueueForGroupsDTO;
@@ -82,9 +85,26 @@ public class GroupService {
         return new ApiResponse("All Groups", true, allGroup) ;
     }
 
+    public Page<GroupEntity> getGroupPage(int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 10);
+        Page<GroupEntity> groupPage = groupRepository.findAll(pageable);
+        return groupPage;
+    }
+
+    public Page<GroupEntity> getGroupPage(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<GroupEntity> groupPage = groupRepository.findAll(pageable);
+        return groupPage;
+    }
+
+    public Page<GroupEntity> getGroupPage(Pageable page) {
+        Page<GroupEntity> groupPage = groupRepository.findAll(page);
+        return groupPage;
+    }
+
     public ApiResponse getGroupById(Long id){
         Optional<GroupEntity> groupEntity = groupRepository.findById(id);
-        return new ApiResponse("One Groups", true, groupEntity) ;
+        return new ApiResponse("One Group", true, groupEntity) ;
     }
 
     public ApiResponse deleteGroupById(Long id){
@@ -105,12 +125,5 @@ public class GroupService {
         groupRepository.save(oldGroup) ;
         return new ApiResponse("group updated", true);
     }
-
-
-
-//    public ApiResponse addByOneById(){
-//
-//    }
-
 
 }
