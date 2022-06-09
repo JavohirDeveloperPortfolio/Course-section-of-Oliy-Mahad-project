@@ -1,6 +1,7 @@
 package uz.oliymahad.courseservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,9 +76,9 @@ public class QueueController implements BaseController {
             @RequestParam(required = false) String gender,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) Long courseId,
-            @RequestParam(required = false) String appliedDate
+            Pageable pageable
     ){
-        ApiResponse<List<QueueEntity>> queueByFilter = queueService.getQueueByFilter(userId, gender, status, courseId, appliedDate);
+        ApiResponse<Page<QueueEntity>> queueByFilter = queueService.getQueueByFilter(userId, gender, status, courseId,pageable);
         return ResponseEntity.status(HttpStatus.OK).body(queueByFilter);
     }
 

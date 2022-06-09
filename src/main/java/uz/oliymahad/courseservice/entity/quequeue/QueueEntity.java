@@ -28,9 +28,13 @@ public class QueueEntity extends BaseEntity {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime appliedDate;
 
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @Enumerated(EnumType.STRING)
+    private EGender gender;
 
     @ManyToOne
     private CourseEntity course;

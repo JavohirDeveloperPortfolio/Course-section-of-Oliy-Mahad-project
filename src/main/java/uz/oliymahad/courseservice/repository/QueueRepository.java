@@ -24,12 +24,13 @@ public interface QueueRepository extends JpaRepository<QueueEntity,Long> {
     List<Long> filterByCourseStatusGenderLimitForGroups(@Param("courseId") Long courseId, @Param("status") String status, @Param("gender") String gender, @Param("limit") Long limit);
 
 
-    @Query(value = "select *from filter_all_parameters1(i_user_id := :userId, i_gender := :gender, i_status := :status, i_course_id := :courseId)",nativeQuery = true)
-    List<QueueEntity> getQueueByFilter(
+    @Query(value = "select *from filter_all_param(:userId, :courseId, :gender, :status)",nativeQuery = true)
+    Page<QueueEntity> getQueueByFilter(
             @Param("userId") Long userId,
             @Param("gender") String gender,
             @Param("status") String status,
-            @Param("courseId") Long courseId
+            @Param("courseId") Long courseId,
+            Pageable pageable
 
     );
 

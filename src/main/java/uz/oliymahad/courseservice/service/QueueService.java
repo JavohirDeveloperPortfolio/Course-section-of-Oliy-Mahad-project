@@ -103,30 +103,25 @@ public class QueueService implements BaseService<QueueDto,Long,QueueEntity,Pagea
     }
 
 
-    public ApiResponse<List<QueueEntity>> getQueueByFilter(Long userId,String gender,String status,Long courseId,String appliedDate){
-        String appliedDateAfter = null;
-        if(appliedDate != null) {
-             appliedDateAfter = getDayAfterDay(appliedDate);
+    public ApiResponse<Page<QueueEntity>> getQueueByFilter(Long userId,String gender,String status,Long courseId,Pageable pageable){
+        if(userId == null) {
+            userId = Long.valueOf(-1);
         }
-        List<QueueEntity> queueByFilter = queueRepository.getQueueByFilter(userId, gender, status, courseId);
+        if(gender == null)
+            gender = "null";
+        if(status == null)
+            status = "null";
+        if(courseId == null)
+            courseId = Long.valueOf(-1);
+
+
+        Page<QueueEntity> queueByFilter = queueRepository.getQueueByFilter(userId, gender, status, courseId,pageable);
         return new ApiResponse<>(SUCCESS,true,queueByFilter);
 
     }
 
 
-    private String getDayAfterDay(String day){
-        String sDay = day.substring(0, 10);
-        Date date = null;
-        try {
-           date =  new SimpleDateFormat("yyyy-MM-dd").parse(sDay);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        long l = date.getTime() + 86400000;
-        Date date1 = new Date(l);
-        String afterDay = new SimpleDateFormat("yyyy-MM-dd").format(date1);
-        return afterDay;
-    }
+
 
 
 }

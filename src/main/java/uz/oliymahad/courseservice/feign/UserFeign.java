@@ -10,4 +10,6 @@ public interface UserFeign {
     boolean isExist(Long id);
 
 
+
+
 }

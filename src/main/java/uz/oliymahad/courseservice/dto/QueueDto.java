@@ -20,4 +20,5 @@ public class QueueDto {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime appliedDate;
+    private String gender;
 }
