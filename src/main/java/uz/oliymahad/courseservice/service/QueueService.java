@@ -7,6 +7,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uz.oliymahad.courseservice.dto.*;
+import uz.oliymahad.courseservice.dto.response.ApiResponse;
+import uz.oliymahad.courseservice.dto.response.Response;
 import uz.oliymahad.courseservice.entity.course.CourseEntity;
 import uz.oliymahad.courseservice.entity.quequeue.QueueEntity;
 import uz.oliymahad.courseservice.entity.quequeue.Status;
@@ -23,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static uz.oliymahad.courseservice.dto.response.Response.*;
 
 @Service
 @RequiredArgsConstructor
