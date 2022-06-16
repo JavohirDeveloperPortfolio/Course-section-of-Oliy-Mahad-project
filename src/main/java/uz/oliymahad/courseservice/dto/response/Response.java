@@ -1,4 +1,4 @@
-package uz.oliymahad.courseservice.dto;
+package uz.oliymahad.courseservice.dto.response;
 
 public interface Response {
     String ALREADY_EXIST = " already exist";

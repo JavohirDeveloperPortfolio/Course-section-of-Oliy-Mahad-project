@@ -1,4 +1,4 @@
-package uz.oliymahad.courseservice.dto;
+package uz.oliymahad.courseservice.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

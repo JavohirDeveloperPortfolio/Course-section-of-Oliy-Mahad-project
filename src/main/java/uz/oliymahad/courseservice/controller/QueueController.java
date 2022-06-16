@@ -7,8 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uz.oliymahad.courseservice.dto.ApiResponse;
-import uz.oliymahad.courseservice.dto.FilterQueueForGroupsDTO;
+import uz.oliymahad.courseservice.dto.response.ApiResponse;
 import uz.oliymahad.courseservice.dto.QueueDto;
 import uz.oliymahad.courseservice.entity.quequeue.QueueEntity;
 import uz.oliymahad.courseservice.service.QueueService;
@@ -48,9 +47,7 @@ public class QueueController implements BaseController {
         ApiResponse<Void> apiResponse = queueService.edit(id, queueDto);
         return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(apiResponse);
     }
-
-
-
+    
     @DeleteMapping( "/{id}")
     public ResponseEntity<?> deleteQueue (@PathVariable Long id) {
         ApiResponse<Void> apiResponse = queueService.delete(id);

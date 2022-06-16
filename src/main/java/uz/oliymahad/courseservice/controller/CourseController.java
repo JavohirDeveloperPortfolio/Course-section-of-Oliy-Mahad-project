@@ -1,12 +1,14 @@
 package uz.oliymahad.courseservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uz.oliymahad.courseservice.dto.ApiResponse;
+import uz.oliymahad.courseservice.dto.response.ApiResponse;
 import uz.oliymahad.courseservice.dto.CourseDto;
+import uz.oliymahad.courseservice.dto.response.CourseSectionDto;
 import uz.oliymahad.courseservice.service.CourseService;
 
 import static uz.oliymahad.courseservice.controller.BaseController.API;
@@ -29,6 +31,11 @@ public class CourseController implements BaseController{
             @RequestBody Pageable pageable
     ) {
         return ResponseEntity.ok(courseService.getList(pageable));
+    }
+
+    @GetMapping(GET+LIST)
+    public Page<CourseSectionDto> getCourses (Pageable pageable) {
+        return courseService.getLists(pageable);
     }
 
     @GetMapping(GET + "/{id}")
