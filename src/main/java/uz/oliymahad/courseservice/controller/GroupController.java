@@ -2,18 +2,15 @@ package uz.oliymahad.courseservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.oliymahad.courseservice.dto.ApiResponse;
-import uz.oliymahad.courseservice.dto.CourseDto;
+import uz.oliymahad.courseservice.dto.group.GroupResponseDto;
 import uz.oliymahad.courseservice.dto.group.GroupRequestDto;
 import uz.oliymahad.courseservice.entity.group.GroupEntity;
 import uz.oliymahad.courseservice.service.GroupService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/group")
@@ -47,9 +44,8 @@ public class GroupController implements BaseController{
     }
 
     @GetMapping("/getGroupPage")
-    public ResponseEntity<Page<GroupEntity>> getGroupPage(Pageable page) {
-        Page<GroupEntity> groupPage = groupService.getGroupPage(page);
-        return ResponseEntity.ok(groupPage);
+    public Page<GroupResponseDto> getGroupPage(Pageable page) {
+        return groupService.getGroupPage(page);
     }
 
 

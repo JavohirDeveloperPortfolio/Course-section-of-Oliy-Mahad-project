@@ -3,13 +3,14 @@ package uz.oliymahad.courseservice.service;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uz.oliymahad.courseservice.dto.ApiResponse;
 import uz.oliymahad.courseservice.dto.FilterQueueForGroupsDTO;
+import uz.oliymahad.courseservice.dto.group.GroupResponseDto;
 import uz.oliymahad.courseservice.dto.group.GroupRequestDto;
-import uz.oliymahad.courseservice.entity.BaseEntity;
 import uz.oliymahad.courseservice.entity.course.CourseEntity;
 import uz.oliymahad.courseservice.entity.group.GroupEntity;
 import uz.oliymahad.courseservice.entity.group.GroupStatusEnum;
@@ -35,6 +36,8 @@ public class GroupService {
     private final QueueService queueService;
 
     private final GroupUsersRepository groupUsersRepository;
+
+    private final ModelMapper modelMapper;
 
 
     public ApiResponse addGroup(GroupRequestDto groupRequestDto) {
@@ -97,9 +100,13 @@ public class GroupService {
         return groupPage;
     }
 
-    public Page<GroupEntity> getGroupPage(Pageable page) {
-        Page<GroupEntity> groupPage = groupRepository.findAll(page);
-        return groupPage;
+    public Page<GroupResponseDto> getGroupPage(Pageable page) {
+        Page<GroupEntity> groupEntities = groupRepository.findAll(page);
+        List<GroupResponseDto> list = groupEntities.getContent().size() > 0 ?
+                groupEntities.getContent().stream().map(u -> modelMapper.map(u, GroupResponseDto.class)).toList() :
+                new ArrayList<>();
+        PageImpl<GroupResponseDto> groupResponseDtos = new PageImpl<>(list, groupEntities.getPageable(), groupEntities.getTotalPages());
+        return groupResponseDtos;
     }
 
     public ApiResponse getGroupById(Long id){
