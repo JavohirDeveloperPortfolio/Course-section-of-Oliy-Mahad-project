@@ -1,9 +1,7 @@
 package uz.oliymahad.courseservice.service;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-import uz.oliymahad.courseservice.dto.ApiResponse;
-
-import java.util.List;
+import uz.oliymahad.courseservice.dto.response.ApiResponse;
 
 /**
  * @param <D> Dto

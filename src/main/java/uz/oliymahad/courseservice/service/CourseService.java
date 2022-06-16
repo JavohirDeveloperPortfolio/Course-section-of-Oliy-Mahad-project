@@ -3,15 +3,19 @@ package uz.oliymahad.courseservice.service;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import uz.oliymahad.courseservice.dto.ApiResponse;
+import uz.oliymahad.courseservice.dto.response.ApiResponse;
 import uz.oliymahad.courseservice.dto.CourseDto;
-import uz.oliymahad.courseservice.dto.Response;
+import uz.oliymahad.courseservice.dto.response.CourseSectionDto;
+import uz.oliymahad.courseservice.dto.response.Response;
 import uz.oliymahad.courseservice.entity.course.CourseEntity;
 import uz.oliymahad.courseservice.feign.UserFeign;
 import uz.oliymahad.courseservice.repository.CourseRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 @Service
 @RequiredArgsConstructor
@@ -21,8 +25,6 @@ public class CourseService implements BaseService<CourseDto,Long,CourseEntity, P
     private final ModelMapper modelMapper;
 
     @Override
-
-
     public ApiResponse<Void> add(CourseDto courseDto) {
         boolean exists = courseRepository.existsByName(courseDto.getName());
         if (exists) {
@@ -38,6 +40,13 @@ public class CourseService implements BaseService<CourseDto,Long,CourseEntity, P
         return new ApiResponse<>(DATA_LIST,true,courseRepository.findAll(pageable));
     }
 
+    public Page<CourseSectionDto> getLists(Pageable pageable) {
+        Page<CourseEntity> courseEntities = courseRepository.findAll(pageable);
+        List<CourseSectionDto> list = courseEntities.getContent().size() > 0 ?
+                courseEntities.getContent().stream().map(u -> modelMapper.map(u, CourseSectionDto.class)).toList() :
+                new ArrayList<>();
+        return new PageImpl<>(list, courseEntities.getPageable(), courseEntities.getTotalPages());
+    }
 
     @Override
     public ApiResponse<CourseDto> get(Long id) {

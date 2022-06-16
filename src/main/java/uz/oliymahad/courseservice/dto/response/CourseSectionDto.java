@@ -1,25 +1,18 @@
-package uz.oliymahad.courseservice.entity.course;
+package uz.oliymahad.courseservice.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import uz.oliymahad.courseservice.entity.BaseEntity;
-
-import javax.persistence.Entity;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@Entity
-public class CourseEntity extends BaseEntity {
-
+public class CourseSectionDto {
+    private Long id;
     private String name;
-
     private String description;
-
     private double price;
-
     private float duration;
 }
