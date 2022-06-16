@@ -6,10 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import uz.oliymahad.courseservice.dto.ApiResponse;
-import uz.oliymahad.courseservice.dto.FilterQueueForGroupsDTO;
-import uz.oliymahad.courseservice.dto.QueueDto;
-import uz.oliymahad.courseservice.dto.Response;
+import uz.oliymahad.courseservice.dto.*;
 import uz.oliymahad.courseservice.entity.course.CourseEntity;
 import uz.oliymahad.courseservice.entity.quequeue.QueueEntity;
 import uz.oliymahad.courseservice.entity.quequeue.Status;
@@ -103,7 +100,7 @@ public class QueueService implements BaseService<QueueDto,Long,QueueEntity,Pagea
     }
 
 
-    public ApiResponse<Page<QueueEntity>> getQueueByFilter(Long userId,String gender,String status,Long courseId,Pageable pageable){
+    public ApiResponse<Page<QueueEntity>> getQueueByFilter(Long userId,String gender,String status,Long courseId,String appliedDate,Pageable pageable){
         if(userId == null) {
             userId = Long.valueOf(-1);
         }
@@ -113,11 +110,41 @@ public class QueueService implements BaseService<QueueDto,Long,QueueEntity,Pagea
             status = "null";
         if(courseId == null)
             courseId = Long.valueOf(-1);
+        if(appliedDate == null)
+            appliedDate = "2015-01-01";
 
-
-        Page<QueueEntity> queueByFilter = queueRepository.getQueueByFilter(userId, gender, status, courseId,pageable);
+        Page<QueueEntity> queueByFilter = queueRepository.getQueueByFilter(userId, gender, status, courseId,appliedDate,pageable);
         return new ApiResponse<>(SUCCESS,true,queueByFilter);
 
+    }
+
+
+    public List<QueueResponseDto> getQueueListByFilter(Long userId,String gender,String status,Long courseId,String appliedDate,Pageable pageable){
+        if(userId == null) {
+            userId = Long.valueOf(-1);
+        }
+        if(gender == null)
+            gender = "null";
+        if(status == null)
+            status = "null";
+        if(courseId == null)
+            courseId = Long.valueOf(-1);
+        if(appliedDate == null)
+            appliedDate = "2015-01-01";
+
+        List<QueueResponseDto> queueResponseDtos = new ArrayList<>();
+
+        for (QueueEntity queueEntity : queueRepository.getQueueByFilter(userId, gender, status, courseId, appliedDate, pageable)) {
+           QueueResponseDto queueResponseDto = new QueueResponseDto();
+           queueResponseDto.setGender(queueEntity.getGender().name());
+           if(queueEntity.getCourse() != null)
+               queueResponseDto.setCourseId(queueEntity.getCourse().getId());
+           queueResponseDto.setUserId(queueEntity.getUserId());
+           queueResponseDto.setStatus(queueEntity.getStatus().name());
+           queueResponseDto.setAppliedDate(queueEntity.getAppliedDate());
+           queueResponseDtos.add(queueResponseDto);
+        }
+        return queueResponseDtos;
     }
 
 

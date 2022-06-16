@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.oliymahad.courseservice.dto.ApiResponse;
 import uz.oliymahad.courseservice.dto.FilterQueueForGroupsDTO;
 import uz.oliymahad.courseservice.dto.QueueDto;
+import uz.oliymahad.courseservice.dto.QueueResponseDto;
 import uz.oliymahad.courseservice.entity.quequeue.QueueEntity;
 import uz.oliymahad.courseservice.service.QueueService;
 
@@ -76,13 +77,25 @@ public class QueueController implements BaseController {
             @RequestParam(required = false) String gender,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) Long courseId,
+            @RequestParam(required = false) String appliedDate,
             Pageable pageable
     ){
-        ApiResponse<Page<QueueEntity>> queueByFilter = queueService.getQueueByFilter(userId, gender, status, courseId,pageable);
+        ApiResponse<Page<QueueEntity>> queueByFilter = queueService.getQueueByFilter(userId, gender, status, courseId,appliedDate,pageable);
         return ResponseEntity.status(HttpStatus.OK).body(queueByFilter);
     }
 
-
+    @GetMapping("/byFilter")
+    public ResponseEntity<?> getQueueListForSection(
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) Long courseId,
+            @RequestParam(required = false) String appliedDate,
+            Pageable pageable
+    ){
+        List<QueueResponseDto> queueListByFilter = queueService.getQueueListByFilter(userId, gender, status, courseId, appliedDate, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(queueListByFilter);
+    }
 
 
 

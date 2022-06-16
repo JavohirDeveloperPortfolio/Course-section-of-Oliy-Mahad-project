@@ -17,19 +17,20 @@ import java.util.Optional;
 public interface QueueRepository extends JpaRepository<QueueEntity,Long> {
     List<QueueEntity> findAllByUserId(long id);
 
-    @Query(value = "select rank from (select user_id,applied_date, rank() over (order by applied_date) from queue_entity where course_id = :courseId) as sub where user_id = :userId", nativeQuery = true)
+    @Query(value = "select rank from (select userid,applieddate, rank() over (order by applieddate) from queueentity where course_id = :courseId) as sub where userid = :userId", nativeQuery = true)
     List<Long> getUserCourseQueue(@Param("userId") Long userId, @Param("courseId") Long courseId);
 
-    @Query(value = "select * from (select *,RANK() over(order by applied_date asc) from queue_entity where course_id = :courseId and status = :status and gender = :gender ) as sub  limit :limit", nativeQuery = true)
+    @Query(value = "select * from (select *,RANK() over(order by applieddate asc) from queueentity where course_id = :courseId and status = :status and gender = :gender ) as sub  limit :limit", nativeQuery = true)
     List<Long> filterByCourseStatusGenderLimitForGroups(@Param("courseId") Long courseId, @Param("status") String status, @Param("gender") String gender, @Param("limit") Long limit);
 
 
-    @Query(value = "select *from filter_all_param(:userId, :courseId, :gender, :status)",nativeQuery = true)
+    @Query(value = "select *from filter_all_param(:userId, :courseId, :gender, :status, :appliedDate)",nativeQuery = true)
     Page<QueueEntity> getQueueByFilter(
             @Param("userId") Long userId,
             @Param("gender") String gender,
             @Param("status") String status,
             @Param("courseId") Long courseId,
+            @Param("appliedDate") String appliedDate,
             Pageable pageable
 
     );
