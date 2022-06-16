@@ -59,7 +59,7 @@ public class CourseService implements BaseService<CourseDto,Long,CourseEntity, P
     }
 
     @Override
-    public ApiResponse<Void> delete(Long id) {
+    public ApiResponse<Void>  delete(Long id) {
         Optional<CourseEntity> optionalCourse = courseRepository.findById(id);
         if (optionalCourse.isEmpty()) {
             return new ApiResponse<>(COURSE + NOT_FOUND,false);
