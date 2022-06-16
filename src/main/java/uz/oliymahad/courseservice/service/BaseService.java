@@ -13,7 +13,7 @@ import java.util.List;
  */
 
 @Component
-public interface BaseService<D,K,E,P> {
+public interface BaseService<D ,K,E,P> {
 
     ApiResponse<Void> add(D d);
     ApiResponse<Page<E>> getList(P p);
