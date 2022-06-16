@@ -27,7 +27,9 @@ public class CourseController implements BaseController{
     }
 
     @GetMapping(LIST)
-    public ResponseEntity<?> getCourseList (Pageable pageable) {
+    public ResponseEntity<?> getCourseList (
+            @RequestBody Pageable pageable
+    ) {
         return ResponseEntity.ok(courseService.getList(pageable));
     }
 

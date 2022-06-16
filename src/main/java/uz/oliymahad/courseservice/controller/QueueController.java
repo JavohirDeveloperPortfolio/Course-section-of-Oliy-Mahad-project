@@ -1,7 +1,9 @@
 package uz.oliymahad.courseservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,13 +11,14 @@ import uz.oliymahad.courseservice.dto.response.ApiResponse;
 import uz.oliymahad.courseservice.dto.QueueDto;
 import uz.oliymahad.courseservice.entity.quequeue.QueueEntity;
 import uz.oliymahad.courseservice.service.QueueService;
+import uz.oliymahad.dto.request.UsersIDSRequest;
 
 import java.util.List;
 
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/queues")
-@RequiredArgsConstructor
 public class QueueController implements BaseController {
 
     private final QueueService queueService;
@@ -78,8 +81,25 @@ public class QueueController implements BaseController {
         return ResponseEntity.status(HttpStatus.OK).body(queueByFilter);
     }
 
+    @GetMapping("/details")
+    private ResponseEntity<?> getQueueDetails(
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false,defaultValue = "DESC") String order,
+            @RequestParam(required = false) String[] tags
+    ){
+        return ResponseEntity.ok(
+                (tags == null || tags.length == 0) ?
+                        queueService.getQueueDetails(PageRequest.of(page, size)):
+                        queueService.getQueueDetails(PageRequest.of(page, size, Sort.Direction.valueOf(order), tags))
+                );
+    }
 
-
-
+    @PostMapping("/test")
+    ResponseEntity<?> getUsers(
+            @RequestBody UsersIDSRequest usersIDSRequest
+    ){
+        return ResponseEntity.ok(queueService.getUserDetailsInQueue(usersIDSRequest));
+    }
 
 }

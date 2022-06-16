@@ -7,10 +7,12 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.*;
 import uz.oliymahad.courseservice.entity.BaseEntity;
 import uz.oliymahad.courseservice.entity.course.CourseEntity;
+import uz.oliymahad.model.entity.UserEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,4 +36,5 @@ public class QueueEntity extends BaseEntity {
 
     @ManyToOne
     private CourseEntity course;
+
 }
