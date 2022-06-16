@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import uz.oliymahad.courseservice.config.LoadBalancerConfigurer;
 import uz.oliymahad.dto.request.UsersIDSRequest;
+import uz.oliymahad.dto.response.UserDataResponse;
 import uz.oliymahad.model.entity.UserEntity;
 
 import java.util.List;
@@ -24,6 +25,6 @@ public interface UserFeign {
     Optional<?> getUserByPhoneNumber(String phoneNumber);
 
     @PostMapping("api/v1/user/feign")
-    List<UserEntity> getUsers(@RequestBody UsersIDSRequest usersIDSRequest);
+    List<UserDataResponse> getUsers(@RequestBody UsersIDSRequest usersIDSRequest);
     
 }

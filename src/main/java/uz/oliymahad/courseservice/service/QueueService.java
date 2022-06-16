@@ -128,7 +128,7 @@ public class QueueService implements BaseService<QueueDto, Long, QueueEntity, Pa
         return afterDay;
     }
 
-    public List<UserEntity> getUserDetailsInQueue(UsersIDSRequest usersIDSRequest) {
+    public List<UserDataResponse> getUserDetailsInQueue(UsersIDSRequest usersIDSRequest) {
         return userFeign.getUsers(usersIDSRequest);
     }
 
@@ -141,31 +141,26 @@ public class QueueService implements BaseService<QueueDto, Long, QueueEntity, Pa
             userIds.add(q.getUserId());
         }
 
-        List<UserEntity> users = userFeign.getUsers(new UsersIDSRequest(userIds));
+        List<UserDataResponse> users = userFeign.getUsers(new UsersIDSRequest(userIds));
         List<QueueUserDetailsDTO> queueUserDetailsDTOS = creatingQueueUserDetailsResponse(page.getContent(), users);
         QueueUserPageableResponse dataResponses = modelMapper.map(page, QueueUserPageableResponse.class);
         dataResponses.setContent(queueUserDetailsDTOS);
         return new ApiResponse<>(SUCCESS, true, dataResponses);
     }
 
-    private List<QueueUserDetailsDTO> creatingQueueUserDetailsResponse(List<QueueEntity> queues, List<UserEntity> users) {
-        List<UserDataResponse> userResponses = new ArrayList<>();
+    private List<QueueUserDetailsDTO> creatingQueueUserDetailsResponse(List<QueueEntity> queues, List<UserDataResponse> users) {
         List<QueueUserDetailsDTO> queueUserDetailsDTOS = new ArrayList<>();
 
-        users.forEach(user -> {
-            userResponses.add(modelMapper.map(user, UserDataResponse.class));
-        });
         queues.forEach(queue -> {
             queueUserDetailsDTOS.add(modelMapper.map(queue, QueueUserDetailsDTO.class));
         });
         int index = 0;
-
         for (QueueEntity queue : queues) {
             UserDataResponse userDataResponse =
-                    userResponses.parallelStream().filter(u -> u.getId() == queue.getUserId()).findFirst().orElse(new UserDataResponse());
+                    users.parallelStream().filter(u -> u.getId() == queue.getUserId()).findFirst().orElse(new UserDataResponse());
             queueUserDetailsDTOS.get(index++).setUserData(userDataResponse);
         }
-        ;
+
         return queueUserDetailsDTOS;
     }
 }
