@@ -1,5 +1,6 @@
 package uz.oliymahad.courseservice.entity.quequeue;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -30,6 +31,7 @@ public class QueueEntity extends BaseEntity {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime appliedDate;
 
+    @JsonIgnore
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
