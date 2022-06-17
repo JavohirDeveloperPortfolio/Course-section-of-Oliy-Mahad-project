@@ -148,7 +148,7 @@ public class QueueService implements BaseService<QueueDto, Long, QueueEntity, Pa
         List<QueueUserDetailsDTO> queueUserDetailsDTOS = creatingQueueUserDetailsResponse(page.getContent(), users);
         QueueUserPageableResponse dataResponses = modelMapper.map(page, QueueUserPageableResponse.class);
         dataResponses.setContent(queueUserDetailsDTOS);
-        return new RestAPIResponse(SUCCESS, true, 200,dataResponses);
+        return new RestAPIResponse(SUCCESS, true, 200,page);
     }
 
     private List<QueueUserDetailsDTO> creatingQueueUserDetailsResponse(List<QueueEntity> queues, List<UserDataResponse> users) {
