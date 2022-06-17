@@ -17,5 +17,4 @@ spring:
     properties:
       hibernate.format_sql: true
   application:
-    name: COURCE-SERVICE
-
+    name: COURSE-SERVICE

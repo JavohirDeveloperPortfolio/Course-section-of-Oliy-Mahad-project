@@ -1,18 +1,20 @@
 package uz.oliymahad.courseservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uz.oliymahad.courseservice.dto.ApiResponse;
-import uz.oliymahad.courseservice.dto.CourseDto;
-import uz.oliymahad.courseservice.dto.group.GroupRequestDto;
+import uz.oliymahad.courseservice.dto.request.GroupRequestDto;
+import uz.oliymahad.courseservice.dto.response.RestAPIResponse;
+import uz.oliymahad.courseservice.entity.group.GroupEntity;
 import uz.oliymahad.courseservice.service.GroupService;
 
-import java.util.List;
+import static uz.oliymahad.courseservice.controller.BaseController.API;
 
 @RestController
-@RequestMapping("/api/group")
+@RequestMapping(API + "/group")
 @RequiredArgsConstructor
 public class GroupController implements BaseController{
 
@@ -20,15 +22,19 @@ public class GroupController implements BaseController{
 
     @PostMapping("/add")
     public ResponseEntity<?> add (@RequestBody GroupRequestDto groupRequestDto) {
-        ApiResponse<Void> apiResponse = groupService.addGroup(groupRequestDto);
-        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.CONFLICT).body(apiResponse);
+        RestAPIResponse apiResponse = groupService.addGroup(groupRequestDto);
+        return ResponseEntity.status(apiResponse.isSuccess() ? HttpStatus.OK : HttpStatus.CONFLICT).body(apiResponse);
     }
 
     @GetMapping("/getAllGroups")
     public ResponseEntity<?> getAllGroups () {
-        ApiResponse<Void> apiResponse = groupService.getAllGroups();
-        return ResponseEntity.status(apiResponse.isStatus() ? HttpStatus.OK : HttpStatus.CONFLICT).body(apiResponse);
+        RestAPIResponse apiResponse = groupService.getAllGroups();
+        return ResponseEntity.status(apiResponse.isSuccess() ? HttpStatus.OK : HttpStatus.CONFLICT).body(apiResponse);
     }
 
+    @GetMapping("/getGroups")
+    public RestAPIResponse getGroupPage(Pageable pageable) {
+        return groupService.getGroupPage(pageable);
+    }
 
 }

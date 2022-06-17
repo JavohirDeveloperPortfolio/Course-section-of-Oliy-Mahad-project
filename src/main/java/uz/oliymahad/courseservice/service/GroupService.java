@@ -2,11 +2,15 @@ package uz.oliymahad.courseservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import uz.oliymahad.courseservice.dto.ApiResponse;
-import uz.oliymahad.courseservice.dto.FilterQueueForGroupsDTO;
-import uz.oliymahad.courseservice.dto.group.GroupRequestDto;
-import uz.oliymahad.courseservice.entity.BaseEntity;
+import uz.oliymahad.courseservice.dto.request.FilterQueueForGroupsDTO;
+import uz.oliymahad.courseservice.dto.request.GroupRequestDto;
+import uz.oliymahad.courseservice.dto.response.GroupSectionDto;
+import uz.oliymahad.courseservice.dto.response.RestAPIResponse;
 import uz.oliymahad.courseservice.entity.course.CourseEntity;
 import uz.oliymahad.courseservice.entity.group.GroupEntity;
 import uz.oliymahad.courseservice.entity.group.GroupStatusEnum;
@@ -33,13 +37,15 @@ public class GroupService {
 
     private final GroupUsersRepository groupUsersRepository;
 
+    private final ModelMapper modelMapper;
 
-    public ApiResponse addGroup(GroupRequestDto groupRequestDto) {
+
+    public RestAPIResponse addGroup(GroupRequestDto groupRequestDto) {
 
         Optional<CourseEntity> courseEntity = courseRepository.findById(groupRequestDto.getCourseId());
 
         if (courseEntity.isEmpty()) {
-            return new ApiResponse("course not found", true);
+            return new RestAPIResponse("course not found", true,404);
         }
 
         GroupEntity groupEntity = new GroupEntity();
@@ -57,10 +63,10 @@ public class GroupService {
         filterQueueDTO.setGender(groupRequestDto.getType());
         filterQueueDTO.setLimit(groupRequestDto.getMembersCount());
         filterQueueDTO.setStatus(Status.ACCEPT.toString());
-        ApiResponse<List<Long>> usersByFilter = queueService.getUsersByFilter(filterQueueDTO);
+        RestAPIResponse usersByFilter = queueService.getUsersByFilter(filterQueueDTO);
 
         List<GroupUsersEntity> groupUsers = new ArrayList<>();
-        for (long userId : usersByFilter.getData()) {
+        for (long userId : (List<Long>)usersByFilter.getData()) {
             GroupUsersEntity groupUser = new GroupUsersEntity();
             groupUser.setUserId(userId);
             groupUser.setGroup(groupEntityDB);
@@ -74,25 +80,46 @@ public class GroupService {
 
         groupRepository.save(groupEntity);
 
-        return new ApiResponse("group added \n", true);
+        return new RestAPIResponse("group added \n", true,200);
     }
 
-    public ApiResponse getAllGroups(){
+    public RestAPIResponse getAllGroups(){
         List<GroupEntity> allGroup = groupRepository.findAll();
-        return new ApiResponse("All Groups", true, allGroup) ;
+        return new RestAPIResponse("All Groups", true,200, allGroup) ;
     }
 
-    public ApiResponse getGroupById(Long id){
+    public Page<GroupEntity> getGroupPage(int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 10);
+        Page<GroupEntity> groupPage = groupRepository.findAll(pageable);
+        return groupPage;
+    }
+
+    public Page<GroupEntity> getGroupPage(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<GroupEntity> groupPage = groupRepository.findAll(pageable);
+        return groupPage;
+    }
+
+    public  RestAPIResponse getGroupPage(Pageable page) {
+        Page<GroupEntity> groupEntities = groupRepository.findAll(page);
+        List<GroupSectionDto> list = groupEntities.getContent().size() > 0 ?
+                groupEntities.getContent().stream().map(u -> modelMapper.map(u, GroupSectionDto.class)).toList() :
+                new ArrayList<>();
+        PageImpl<GroupSectionDto> groupResponseDtos = new PageImpl<>(list, groupEntities.getPageable(), groupEntities.getTotalPages());
+        return new RestAPIResponse("Group List",true,200,groupResponseDtos);
+    }
+
+    public RestAPIResponse getGroupById(Long id){
         Optional<GroupEntity> groupEntity = groupRepository.findById(id);
-        return new ApiResponse("One Groups", true, groupEntity) ;
+        return new RestAPIResponse("One Group", true,200, groupEntity) ;
     }
 
-    public ApiResponse deleteGroupById(Long id){
+    public RestAPIResponse deleteGroupById(Long id){
         groupRepository.deleteById(id);
-        return new ApiResponse("group deleted", true) ;
+        return new RestAPIResponse("group deleted", true,200) ;
     }
 
-    public ApiResponse editGroupInfo(GroupRequestDto newGroup, Long id){
+    public RestAPIResponse editGroupInfo(GroupRequestDto newGroup, Long id){
         GroupEntity oldGroup = groupRepository.getById(id);
         if (!newGroup.getName().isBlank()) oldGroup.setName(newGroup.getName());
         if (newGroup.getMembersCount() != 0) oldGroup.setMembersCount(newGroup.getMembersCount());
@@ -103,14 +130,7 @@ public class GroupService {
             oldGroup.setCourse(courseEntity.get());
         }
         groupRepository.save(oldGroup) ;
-        return new ApiResponse("group updated", true);
+        return new RestAPIResponse("group updated", true,200);
     }
-
-
-
-//    public ApiResponse addByOneById(){
-//
-//    }
-
 
 }
