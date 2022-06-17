@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import uz.oliymahad.courseservice.dto.response.Response;
 import uz.oliymahad.dto.response.UserDataResponse;
 
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class QueueUserDetailsDTO implements Response{
+public class QueueUserDetailsDTO implements Response {
     private Long id;
 
     private long courseId;
