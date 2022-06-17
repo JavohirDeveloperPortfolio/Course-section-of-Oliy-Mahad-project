@@ -1,4 +1,4 @@
-package uz.oliymahad.courseservice.dto.group;
+package uz.oliymahad.courseservice.dto.request;
 
 import lombok.Data;
 
