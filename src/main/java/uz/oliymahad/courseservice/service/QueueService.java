@@ -137,19 +137,18 @@ public class QueueService implements BaseService<QueueDto, Long, QueueEntity, Pa
     }
 
 
-    public RestAPIResponse getQueueDetails(PageRequest pageRequest) {
+    public RestAPIResponse getQueueDetails(Pageable pageable) {
 
-        Page<QueueEntity> page = queueRepository.findAll(pageRequest);
+        Page<QueueEntity> page = queueRepository.findAll(pageable);
         List<Long> userIds = new ArrayList<>();
         for (QueueEntity q : page.getContent()) {
             userIds.add(q.getUserId());
         }
-
         List<UserDataResponse> users = userFeign.getUsers(new UsersIDSRequest(userIds));
         List<QueueUserDetailsDTO> queueUserDetailsDTOS = creatingQueueUserDetailsResponse(page.getContent(), users);
         QueueUserPageableResponse dataResponses = modelMapper.map(page, QueueUserPageableResponse.class);
         dataResponses.setContent(queueUserDetailsDTOS);
-        return new RestAPIResponse(SUCCESS, true, 200,dataResponses);
+        return new RestAPIResponse(SUCCESS, true, 200,page);
     }
 
     private List<QueueUserDetailsDTO> creatingQueueUserDetailsResponse(List<QueueEntity> queues, List<UserDataResponse> users) {
