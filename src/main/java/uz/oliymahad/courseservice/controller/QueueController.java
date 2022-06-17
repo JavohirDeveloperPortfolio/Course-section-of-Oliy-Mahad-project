@@ -12,13 +12,20 @@ import uz.oliymahad.courseservice.dto.request.QueueDto;
 import uz.oliymahad.courseservice.service.QueueService;
 import uz.oliymahad.dto.request.UsersIDSRequest;
 
+import static uz.oliymahad.courseservice.controller.BaseController.API;
+
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/queues")
+@RequestMapping(API + "/queue")
 public class QueueController implements BaseController {
 
     private final QueueService queueService;
+
+    @GetMapping("/getQueue")
+    public RestAPIResponse getQueue (Pageable pageable) {
+       return queueService.getQueueDetails(pageable);
+    }
 
     @PostMapping()
     public ResponseEntity<?> addQueue(@RequestBody QueueDto queueDto) {
