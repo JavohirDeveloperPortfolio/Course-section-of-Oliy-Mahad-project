@@ -1,4 +1,4 @@
-package uz.oliymahad.courseservice.dto;
+package uz.oliymahad.courseservice.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class CourseDto {
-
+public class CourseSectionDto {
+    private Long id;
     private String name;
     private String description;
     private double price;

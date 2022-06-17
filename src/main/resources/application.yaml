@@ -4,18 +4,17 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/coursesectionofoliymahad
+    url: jdbc:postgresql://localhost:5432/course_section
     username: postgres
-    password: 1
+    password: 7475
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
     properties:
       hibernate.format_sql: true
   application:
-    name: COURCE-SERVICE
-
+    name: COURSE-SERVICE
