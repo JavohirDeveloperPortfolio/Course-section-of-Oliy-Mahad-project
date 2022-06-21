@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uz.oliymahad.courseservice.dto.response.Response;
+import uz.oliymahad.courseservice.entity.course.CourseEntity;
+import uz.oliymahad.courseservice.entity.quequeue.Status;
 import uz.oliymahad.dto.response.UserDataResponse;
 
 import java.time.LocalDateTime;
@@ -21,7 +23,7 @@ import java.time.LocalDateTime;
 public class QueueUserDetailsDTO implements Response {
     private Long id;
 
-    private long courseId;
+    private CourseEntity course;
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -29,4 +31,6 @@ public class QueueUserDetailsDTO implements Response {
     private LocalDateTime appliedDate;
 
     private UserDataResponse userData;
+
+    private Status status;
 }

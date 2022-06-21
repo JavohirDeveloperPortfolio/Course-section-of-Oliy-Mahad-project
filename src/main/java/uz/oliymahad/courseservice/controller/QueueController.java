@@ -1,11 +1,13 @@
 package uz.oliymahad.courseservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import uz.oliymahad.courseservice.dto.response.RestAPIResponse;
 import uz.oliymahad.courseservice.dto.request.QueueDto;
@@ -87,13 +89,15 @@ public class QueueController implements BaseController {
 
     @GetMapping("/details")
     private ResponseEntity<?> getQueueDetails(
-            @RequestParam(required = false, defaultValue = "0") Integer page,
-            @RequestParam(required = false) Integer size,
-            @RequestParam(required = false,defaultValue = "DESC") String order,
-            @RequestParam(required = false) String[] tags
+            @RequestParam(name = "page",required = false, defaultValue = "0") Integer page,
+            @RequestParam(name = "size",required = false, defaultValue = "20") Integer size,
+            @RequestParam(name = "order",required = false,defaultValue = "DESC") String order,
+            @RequestParam(name = "tags",required = false) String[] tags
     ){
+        System.out.println("page: " + page +" \nsize: " + size + " \norder: " + order + " \ntags: " +tags);
+
         return ResponseEntity.ok(
-                (tags == null || tags.length == 0) ?
+                (tags == null) ?
                         queueService.getQueueDetails(PageRequest.of(page, size)):
                         queueService.getQueueDetails(PageRequest.of(page, size, Sort.Direction.valueOf(order), tags))
                 );
