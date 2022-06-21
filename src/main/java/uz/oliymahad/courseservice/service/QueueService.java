@@ -11,6 +11,7 @@ import uz.oliymahad.courseservice.dto.QueueDto;
 import uz.oliymahad.courseservice.dto.QueueUserDetailsDTO;
 import uz.oliymahad.courseservice.dto.QueueUserPageableResponse;
 import uz.oliymahad.courseservice.dto.response.ApiResponse;
+import uz.oliymahad.courseservice.dto.response.QueueResponse;
 import uz.oliymahad.courseservice.dto.response.Response;
 import uz.oliymahad.courseservice.entity.course.CourseEntity;
 import uz.oliymahad.courseservice.entity.quequeue.QueueEntity;
@@ -136,21 +137,45 @@ public class QueueService implements BaseService<QueueDto, Long, QueueEntity, Pa
         return userFeign.getUsers(usersIDSRequest);
     }
 
+    public List<QueueResponse> createQueueResponseForBackend(List<QueueUserDetailsDTO> list, List<QueueEntity> queues){
+        List<QueueResponse> result = new ArrayList<>();
+        for (QueueUserDetailsDTO queueUserDetailsDTO : list) {
+            UserDataResponse userData = queueUserDetailsDTO.getUserData();
+            result.add(new QueueResponse(
+                    queueUserDetailsDTO.getId(),
+                    queueUserDetailsDTO.getCourse().getName(),
+                    userData.getId(),
+                    userData.getPhoneNumber(),
+                    userData.getEmail(),
+                    userData.getUserRegisterDetails().getFirstName(),
+                    userData.getUserRegisterDetails().getLastName(),
+                    queueUserDetailsDTO.getAppliedDate(),
+                    null
+            ));
+        }
+        return result;
+    }
 
-    public ApiResponse<?> getQueueDetails(PageRequest pageRequest) {
-
-        Page<QueueEntity> page = queueRepository.findAll(pageRequest);
+    public List<UserDataResponse> getUserDataFromFeign(Pageable pageable, List<QueueEntity> list){
         List<Long> userIds = new ArrayList<>();
-        for (QueueEntity q : page.getContent()) {
+        for (QueueEntity q : list) {
             userIds.add(q.getUserId());
         }
-
         List<UserDataResponse> users = userFeign.getUsers(new UsersIDSRequest(userIds));
-        List<QueueUserDetailsDTO> queueUserDetailsDTOS = creatingQueueUserDetailsResponse(page.getContent(), users);
-        QueueUserPageableResponse dataResponses = modelMapper.map(page, QueueUserPageableResponse.class);
-        dataResponses.setContent(queueUserDetailsDTOS);
-        return new ApiResponse<>(SUCCESS, true, dataResponses);
+        return users;
     }
+
+    public List<QueueResponse> getQueueDetails(PageRequest pageRequest) {
+        Page<QueueEntity> queueEntityPage = queueRepository.findAll(pageRequest);
+
+        List<UserDataResponse> usersFromFeign = getUserDataFromFeign(pageRequest,queueEntityPage.getContent());
+        List<QueueUserDetailsDTO> queueUserDetailsDTOS = creatingQueueUserDetailsResponse(queueEntityPage.getContent(), usersFromFeign);
+//        QueueUserPageableResponse dataResponses = modelMapper.map(page, QueueUserPageableResponse.class);
+//        dataResponses.setContent(queueUserDetailsDTOS);
+        List<QueueResponse> response = createQueueResponseForBackend(queueUserDetailsDTOS, queueEntityPage.getContent());
+        return response;
+    }
+
 
     private List<QueueUserDetailsDTO> creatingQueueUserDetailsResponse(List<QueueEntity> queues, List<UserDataResponse> users) {
         List<QueueUserDetailsDTO> queueUserDetailsDTOS = new ArrayList<>();
@@ -167,4 +192,5 @@ public class QueueService implements BaseService<QueueDto, Long, QueueEntity, Pa
 
         return queueUserDetailsDTOS;
     }
+
 }

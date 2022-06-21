@@ -85,13 +85,15 @@ public class QueueController implements BaseController {
 
     @GetMapping("/details")
     private ResponseEntity<?> getQueueDetails(
-            @RequestParam(required = false, defaultValue = "0") Integer page,
-            @RequestParam(required = false) Integer size,
-            @RequestParam(required = false,defaultValue = "DESC") String order,
-            @RequestParam(required = false) String[] tags
+            @RequestParam(name = "page",required = false, defaultValue = "0") Integer page,
+            @RequestParam(name = "size",required = false, defaultValue = "20") Integer size,
+            @RequestParam(name = "order",required = false,defaultValue = "DESC") String order,
+            @RequestParam(name = "tags",required = false) String[] tags
     ){
+        System.out.println("page: " + page +" \nsize: " + size + " \norder: " + order + " \ntags: " +tags);
+
         return ResponseEntity.ok(
-                (tags == null || tags.length == 0) ?
+                (tags == null) ?
                         queueService.getQueueDetails(PageRequest.of(page, size)):
                         queueService.getQueueDetails(PageRequest.of(page, size, Sort.Direction.valueOf(order), tags))
                 );
