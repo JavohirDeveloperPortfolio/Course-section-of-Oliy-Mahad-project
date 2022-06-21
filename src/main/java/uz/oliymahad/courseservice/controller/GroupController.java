@@ -14,7 +14,7 @@ import uz.oliymahad.courseservice.service.GroupService;
 import static uz.oliymahad.courseservice.controller.BaseController.API;
 
 @RestController
-@RequestMapping(API + "/group")
+@RequestMapping(API + "/course/group")
 @RequiredArgsConstructor
 public class GroupController implements BaseController{
 

@@ -2,6 +2,7 @@ package uz.oliymahad.courseservice.repository;
 
 import feign.Param;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -33,7 +34,10 @@ public interface QueueRepository extends JpaRepository<QueueEntity,Long> {
 
     );
 
-    @Query("select q from QueueEntity q ")
-    List<QueueEntity> findAllByCourseEntityId( PageRequest pageable);
+//    @Query("select q from QueueEntity q ")
+//    List<QueueEntity> findAllByCourseEntityId( PageRequest pageable);
+//
+//    @Query("select q from queue_entity q ")
+//    List<QueueEntity> findAllByCourseEntityId( PageRequest pageable);
 
 }

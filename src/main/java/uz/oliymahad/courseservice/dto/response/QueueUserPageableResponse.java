@@ -20,7 +20,7 @@ public class QueueUserPageableResponse {
 
     private int numberOfElements;
 
-    private List<QueueUserDetailsDTO> content;
+    private List<QueueResponse> content;
 
     private boolean hasContent;
 

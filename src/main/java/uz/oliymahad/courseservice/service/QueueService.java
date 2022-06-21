@@ -1,18 +1,17 @@
 package uz.oliymahad.courseservice.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import uz.oliymahad.courseservice.dto.FilterQueueForGroupsDTO;
-import uz.oliymahad.courseservice.dto.QueueDto;
-import uz.oliymahad.courseservice.dto.QueueUserDetailsDTO;
-import uz.oliymahad.courseservice.dto.QueueUserPageableResponse;
-import uz.oliymahad.courseservice.dto.response.ApiResponse;
-import uz.oliymahad.courseservice.dto.response.QueueResponse;
-import uz.oliymahad.courseservice.dto.response.Response;
+import uz.oliymahad.courseservice.dto.request.FilterQueueForGroupsDTO;
+import uz.oliymahad.courseservice.dto.request.QueueDto;
+import uz.oliymahad.courseservice.dto.response.*;
 import uz.oliymahad.courseservice.entity.course.CourseEntity;
 import uz.oliymahad.courseservice.entity.quequeue.QueueEntity;
 import uz.oliymahad.courseservice.entity.quequeue.Status;
@@ -24,10 +23,7 @@ import uz.oliymahad.dto.response.UserDataResponse;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -41,80 +37,80 @@ public class QueueService implements BaseService<QueueDto, Long, QueueEntity, Pa
 
 
     @Override
-    public ApiResponse<Void> add(QueueDto queueDto) {
+    public RestAPIResponse add(QueueDto queueDto) {
 //        boolean exist = userFeign.isExist(queueDto.getUserId());
 //        if (!exist) {
 //            return new ApiResponse<>(USER + NOT_FOUND,false);
 //        }
         Optional<CourseEntity> optionalCourse = courseRepository.findById(queueDto.getCourseId());
         if (optionalCourse.isEmpty()) {
-            return new ApiResponse<>(COURSE + NOT_FOUND, false);
+            return new RestAPIResponse(COURSE + NOT_FOUND, false,404);
         }
         QueueEntity queueEntity = modelMapper.map(queueDto, QueueEntity.class);
         queueEntity.setCourse(optionalCourse.get());
         queueEntity.setStatus(Status.PENDING);
         queueRepository.save(queueEntity);
-        return new ApiResponse<>(SUCCESSFULLY_SAVED, true);
+        return new RestAPIResponse(SUCCESSFULLY_SAVED, true,200);
     }
 
     @Override
-    public ApiResponse<Page<QueueEntity>> getList(Pageable page) {
-        return new ApiResponse<>(DATA_LIST, true, queueRepository.findAll(page));
+    public RestAPIResponse getList(Pageable page) {
+        return new RestAPIResponse(DATA_LIST, true, 200,queueRepository.findAll(page));
 
     }
 
     @Override
-    public ApiResponse<QueueDto> get(Long id) {
+    public RestAPIResponse get(Long id) {
         Optional<QueueEntity> optionalQueue = queueRepository.findById(id);
         if (optionalQueue.isEmpty()) {
-            return new ApiResponse<>(QUEUE + NOT_FOUND, false);
+            return new RestAPIResponse(QUEUE + NOT_FOUND, false,404);
         }
         QueueDto queueDto = modelMapper.map(optionalQueue.get(), QueueDto.class);
-        return new ApiResponse<>(QUEUE, true, queueDto);
+        return new RestAPIResponse(QUEUE, true, 200,queueDto);
     }
 
     @Override
-    public ApiResponse<Void> delete(Long id) {
+    public RestAPIResponse delete(Long id) {
         Optional<QueueEntity> optionalQueue = queueRepository.findById(id);
         if (optionalQueue.isEmpty()) {
-            return new ApiResponse<>(QUEUE + NOT_FOUND, false);
+            return new RestAPIResponse(QUEUE + NOT_FOUND, false,404);
         }
         queueRepository.delete(optionalQueue.get());
-        return new ApiResponse<>(SUCCESSFULLY_DELETED, true);
+        return new RestAPIResponse(SUCCESSFULLY_DELETED, true,200);
     }
 
     @Override
-    public ApiResponse<Void> edit(Long id, QueueDto queueDto) {
+    public RestAPIResponse edit(Long id, QueueDto queueDto) {
         Optional<QueueEntity> optionalQueue = queueRepository.findById(id);
         if (optionalQueue.isEmpty()) {
-            return new ApiResponse<>(QUEUE + NOT_FOUND, false);
+            return new RestAPIResponse(QUEUE + NOT_FOUND, false,404);
         }
         QueueEntity queueEntity = optionalQueue.get();
         if (queueDto.getAppliedDate() == null)
             queueDto.setAppliedDate(queueEntity.getAppliedDate());
         modelMapper.map(queueDto, queueEntity);
         queueRepository.save(queueEntity);
-        return new ApiResponse<>(SUCCESSFULLY_UPDATED, true);
+        return new RestAPIResponse(SUCCESSFULLY_UPDATED, true,200);
     }
 
-    public ApiResponse<List<Long>> getUserCourseQueue(Long userId, Long courseId) {
+    public RestAPIResponse getUserCourseQueue(Long userId, Long courseId) {
         List<Long> userCourseQueue = queueRepository.getUserCourseQueue(userId, courseId);
-        return new ApiResponse<>(SUCCESS, true, userCourseQueue);
+        return new RestAPIResponse(SUCCESS, true,200,userCourseQueue);
     }
 
-    public ApiResponse<List<Long>> getUsersByFilter(FilterQueueForGroupsDTO filterQueueDTO) {
+    public RestAPIResponse getUsersByFilter(FilterQueueForGroupsDTO filterQueueDTO) {
         List<Long> users = queueRepository.filterByCourseStatusGenderLimitForGroups(filterQueueDTO.getCourseId(), filterQueueDTO.getStatus(), filterQueueDTO.getGender(), filterQueueDTO.getLimit());
-        return new ApiResponse<>(SUCCESS, true, users);
+        return new RestAPIResponse(SUCCESS, true,200, users);
     }
 
 
-    public ApiResponse<List<QueueEntity>> getQueueByFilter(Long userId, String gender, String status, Long courseId, String appliedDate) {
+    public RestAPIResponse getQueueByFilter(Long userId, String gender, String status, Long courseId, String appliedDate) {
         String appliedDateAfter = null;
         if (appliedDate != null) {
             appliedDateAfter = getDayAfterDay(appliedDate);
         }
         List<QueueEntity> queueByFilter = queueRepository.getQueueByFilter(userId, gender, status, courseId);
-        return new ApiResponse<>(SUCCESS, true, queueByFilter);
+        return new RestAPIResponse(SUCCESS, true, 200,queueByFilter);
 
     }
 
@@ -127,7 +123,7 @@ public class QueueService implements BaseService<QueueDto, Long, QueueEntity, Pa
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        long l = date.getTime() + 86400000;
+        long l = date.getTime() + 86_400_000;
         Date date1 = new Date(l);
         String afterDay = new SimpleDateFormat("yyyy-MM-dd").format(date1);
         return afterDay;
@@ -166,15 +162,18 @@ public class QueueService implements BaseService<QueueDto, Long, QueueEntity, Pa
         return users;
     }
 
-    public List<QueueResponse> getQueueDetails(PageRequest pageRequest) {
+    public RestAPIResponse getQueueDetails(Pageable pageRequest) throws JsonProcessingException {
         Page<QueueEntity> queueEntityPage = queueRepository.findAll(pageRequest);
 
         List<UserDataResponse> usersFromFeign = getUserDataFromFeign(pageRequest,queueEntityPage.getContent());
         List<QueueUserDetailsDTO> queueUserDetailsDTOS = creatingQueueUserDetailsResponse(queueEntityPage.getContent(), usersFromFeign);
-//        QueueUserPageableResponse dataResponses = modelMapper.map(page, QueueUserPageableResponse.class);
-//        dataResponses.setContent(queueUserDetailsDTOS);
         List<QueueResponse> response = createQueueResponseForBackend(queueUserDetailsDTOS, queueEntityPage.getContent());
-        return response;
+        QueueUserPageableResponse pageableResponse = modelMapper.map(queueEntityPage, QueueUserPageableResponse.class);
+        pageableResponse.setContent(response);
+
+//        String s = new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsString(pageableResponse);
+//        System.out.println(s);
+        return new RestAPIResponse("Queue List",true,200,pageableResponse);
     }
 
 

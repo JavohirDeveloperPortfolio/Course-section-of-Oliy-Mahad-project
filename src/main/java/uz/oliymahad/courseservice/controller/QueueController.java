@@ -1,5 +1,6 @@
 package uz.oliymahad.courseservice.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import uz.oliymahad.courseservice.dto.response.Response;
 import uz.oliymahad.courseservice.dto.response.RestAPIResponse;
 import uz.oliymahad.courseservice.dto.request.QueueDto;
 import uz.oliymahad.courseservice.service.QueueService;
@@ -19,17 +21,17 @@ import static uz.oliymahad.courseservice.controller.BaseController.API;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(API + "/queue")
+@RequestMapping(API + "/course/queue")
 public class QueueController implements BaseController {
 
     private final QueueService queueService;
 
-    @GetMapping("/getQueue")
-    public RestAPIResponse getQueue (Pageable pageable) {
-       return queueService.getQueueDetails(pageable);
-    }
+//    @GetMapping("/getQueue")
+//    public RestAPIResponse getQueue (Pageable pageable) {
+//       return queueService.getQueueDetails(pageable);
+//    }
 
-    @PostMapping()
+    @PostMapping("/add")
     public ResponseEntity<?> addQueue(@RequestBody QueueDto queueDto) {
         RestAPIResponse apiResponse = queueService.add(queueDto);
         return ResponseEntity.status(apiResponse.isSuccess() ? HttpStatus.CREATED : HttpStatus.CONFLICT).body(apiResponse);
@@ -87,20 +89,22 @@ public class QueueController implements BaseController {
         return ResponseEntity.status(HttpStatus.OK).body(queueByFilter);
     }
 
-    @GetMapping("/details")
-    private ResponseEntity<?> getQueueDetails(
-            @RequestParam(name = "page",required = false, defaultValue = "0") Integer page,
-            @RequestParam(name = "size",required = false, defaultValue = "20") Integer size,
-            @RequestParam(name = "order",required = false,defaultValue = "DESC") String order,
-            @RequestParam(name = "tags",required = false) String[] tags
-    ){
-        System.out.println("page: " + page +" \nsize: " + size + " \norder: " + order + " \ntags: " +tags);
+    @GetMapping("/list")
+    private RestAPIResponse getQueueDetails(
+//            @RequestParam(name = "page",required = false, defaultValue = "0") Integer page,
+//            @RequestParam(name = "size",required = false, defaultValue = "20") Integer size,
+//            @RequestParam(name = "order",required = false,defaultValue = "DESC") String order,
+//            @RequestParam(name = "tags",required = false) String[] tags
+            Pageable pageable
+    ) throws JsonProcessingException {
+//        System.out.println("page: " + page +" \nsize: " + size + " \norder: " + order + " \ntags: " +tags);
 
-        return ResponseEntity.ok(
-                (tags == null) ?
-                        queueService.getQueueDetails(PageRequest.of(page, size)):
-                        queueService.getQueueDetails(PageRequest.of(page, size, Sort.Direction.valueOf(order), tags))
-                );
+//        return ResponseEntity.ok(
+//                (tags == null) ?
+//                        queueService.getQueueDetails(PageRequest.of(page, size)):
+//                        queueService.getQueueDetails(PageRequest.of(page, size, Sort.Direction.valueOf(order), tags))
+//                );
+        return queueService.getQueueDetails(pageable);
     }
 
     @PostMapping("/test")
