@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uz.oliymahad.courseservice.dto.response.Response;
 import uz.oliymahad.courseservice.entity.course.CourseEntity;
+import uz.oliymahad.courseservice.entity.quequeue.Status;
 import uz.oliymahad.dto.response.UserDataResponse;
 
 import java.time.LocalDateTime;
@@ -30,4 +31,6 @@ public class QueueUserDetailsDTO implements Response {
     private LocalDateTime appliedDate;
 
     private UserDataResponse userData;
+
+    private Status status;
 }

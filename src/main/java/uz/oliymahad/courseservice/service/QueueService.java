@@ -150,7 +150,8 @@ public class QueueService implements BaseService<QueueDto, Long, QueueEntity, Pa
                     userData.getUserRegisterDetails().getFirstName(),
                     userData.getUserRegisterDetails().getLastName(),
                     queueUserDetailsDTO.getAppliedDate(),
-                    null
+                    null,
+                    queueUserDetailsDTO.getStatus()
             ));
         }
         return result;

@@ -3,6 +3,7 @@ package uz.oliymahad.courseservice.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import uz.oliymahad.courseservice.entity.quequeue.Status;
 
 import java.time.LocalDateTime;
 
@@ -19,4 +20,5 @@ public class QueueResponse {
     private String lastName;
     private LocalDateTime appliedDate;
     private LocalDateTime endDate;
+    private Status status;
 }
