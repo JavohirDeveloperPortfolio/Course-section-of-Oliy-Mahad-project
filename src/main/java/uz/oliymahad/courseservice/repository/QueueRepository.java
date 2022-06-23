@@ -33,7 +33,7 @@ public interface QueueRepository extends JpaRepository<QueueEntity,Long> {
 
     );
 
-    @Query("select q from QueueEntity q ")
-    List<QueueEntity> findAllByCourseEntityId( PageRequest pageable);
+//    @Query("select q from QueueEntity q ")
+//    List<QueueEntity> findAllByCourseEntityId( PageRequest pageable);
 
 }
