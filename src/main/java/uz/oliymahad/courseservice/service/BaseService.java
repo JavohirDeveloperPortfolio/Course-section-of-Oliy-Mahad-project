@@ -1,7 +1,6 @@
 package uz.oliymahad.courseservice.service;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-import uz.oliymahad.courseservice.dto.response.ApiResponse;
+import uz.oliymahad.courseservice.dto.response.RestAPIResponse;
 
 /**
  * @param <D> Dto
@@ -13,10 +12,10 @@ import uz.oliymahad.courseservice.dto.response.ApiResponse;
 @Component
 public interface BaseService<D ,K,E,P> {
 
-    ApiResponse<Void> add(D d);
-    ApiResponse<Page<E>> getList(P p);
-    ApiResponse<D> get(K id);
-    ApiResponse<Void> delete(K id);
-    ApiResponse<Void> edit(K id, D d);
+    RestAPIResponse add(D d);
+    RestAPIResponse getList(P p);
+    RestAPIResponse get(K id);
+    RestAPIResponse delete(K id);
+    RestAPIResponse edit(K id, D d);
 
 }

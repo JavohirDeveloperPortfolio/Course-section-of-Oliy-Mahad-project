@@ -1,4 +1,4 @@
-package uz.oliymahad.courseservice.dto;
+package uz.oliymahad.courseservice.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

@@ -9,15 +9,17 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ApiResponse<T> {
+public class RestAPIResponse {
 
     private String message;
-    private boolean status;
-    private T data;
+    private boolean success;
+    private int statusCode;
 
+    private Object data;
 
-    public ApiResponse(String message, boolean status) {
+    public RestAPIResponse(String message, boolean success, int statusCode) {
         this.message = message;
-        this.status = status;
+        this.success = success;
+        this.statusCode = statusCode;
     }
 }

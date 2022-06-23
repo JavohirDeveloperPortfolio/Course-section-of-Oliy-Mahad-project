@@ -17,10 +17,10 @@ import java.util.Optional;
 public interface QueueRepository extends JpaRepository<QueueEntity,Long> {
     List<QueueEntity> findAllByUserId(long id);
 
-    @Query(value = "select rank from (select user_id,applied_date, rank() over (order by applied_date) from queue_entity where course_id = :courseId) as sub where user_id = :userId", nativeQuery = true)
+    @Query(value = "select rank from (select user_id,applieddate, rank() over (order by applieddate) from queue_entity where course_id = :courseId) as sub where user_id = :userId", nativeQuery = true)
     List<Long> getUserCourseQueue(@Param("userId") Long userId, @Param("courseId") Long courseId);
 
-    @Query(value = "select * from (select *,RANK() over(order by applied_date asc) from queue_entity where course_id = :courseId and status = :status and gender = :gender ) as sub  limit :limit", nativeQuery = true)
+    @Query(value = "select * from (select *,RANK() over(order by applieddate asc) from queue_entity where course_id = :courseId and status = :status and gender = :gender ) as sub  limit :limit", nativeQuery = true)
     List<Long> filterByCourseStatusGenderLimitForGroups(@Param("courseId") Long courseId, @Param("status") String status, @Param("gender") String gender, @Param("limit") Long limit);
 
 
@@ -32,5 +32,8 @@ public interface QueueRepository extends JpaRepository<QueueEntity,Long> {
             @Param("courseId") Long courseId
 
     );
+
+    @Query("select q from QueueEntity q ")
+    List<QueueEntity> findAllByCourseEntityId( PageRequest pageable);
 
 }

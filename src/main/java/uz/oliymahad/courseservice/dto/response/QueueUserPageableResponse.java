@@ -1,8 +1,9 @@
-package uz.oliymahad.courseservice.dto;
+package uz.oliymahad.courseservice.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Sort;
+import uz.oliymahad.courseservice.dto.response.QueueUserDetailsDTO;
 
 import java.util.List;
 
