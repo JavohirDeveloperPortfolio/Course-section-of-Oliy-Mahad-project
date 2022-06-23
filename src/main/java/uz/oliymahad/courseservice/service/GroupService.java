@@ -62,7 +62,7 @@ public class GroupService {
         filterQueueDTO.setCourseId(groupRequestDto.getCourseId());
         filterQueueDTO.setGender(groupRequestDto.getType());
         filterQueueDTO.setLimit(groupRequestDto.getMembersCount());
-        filterQueueDTO.setStatus(Status.ACCEPT.toString());
+        filterQueueDTO.setStatus(Status.PENDING.toString());
         RestAPIResponse usersByFilter = queueService.getUsersByFilter(filterQueueDTO);
 
         List<GroupUsersEntity> groupUsers = new ArrayList<>();

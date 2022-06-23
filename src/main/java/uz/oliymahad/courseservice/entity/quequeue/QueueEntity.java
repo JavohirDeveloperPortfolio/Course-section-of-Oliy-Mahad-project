@@ -36,6 +36,9 @@ public class QueueEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Enumerated(EnumType.STRING)
+    private EGender gender;
+
     @ManyToOne
     private CourseEntity course;
 
