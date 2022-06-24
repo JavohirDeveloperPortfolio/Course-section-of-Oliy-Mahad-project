@@ -137,18 +137,29 @@ public class QueueService implements BaseService<QueueDto, Long, QueueEntity, Pa
         List<QueueResponse> result = new ArrayList<>();
         for (QueueUserDetailsDTO queueUserDetailsDTO : list) {
             UserDataResponse userData = queueUserDetailsDTO.getUserData();
-            result.add(new QueueResponse(
-                    queueUserDetailsDTO.getId(),
-                    queueUserDetailsDTO.getCourse().getName(),
-                    userData.getId(),
-                    userData.getPhoneNumber(),
-                    userData.getEmail(),
-                    userData.getUserRegisterDetails().getFirstName(),
-                    userData.getUserRegisterDetails().getLastName(),
-                    queueUserDetailsDTO.getAppliedDate(),
-                    null,
-                    queueUserDetailsDTO.getStatus()
-            ));
+            if(userData != null && userData.getUserRegisterDetails() != null){
+                result.add(new QueueResponse(
+                        queueUserDetailsDTO.getId(),
+                        queueUserDetailsDTO.getCourse().getName(),
+                        userData.getId(),
+                        userData.getPhoneNumber(),
+                        userData.getEmail(),
+                        userData.getUserRegisterDetails().getFirstName(),
+                        userData.getUserRegisterDetails().getLastName(),
+                        queueUserDetailsDTO.getAppliedDate(),
+                        null,
+                        queueUserDetailsDTO.getStatus()
+                ));
+            }else {
+                QueueResponse queueResponse = new QueueResponse();
+                queueResponse.setId(queueUserDetailsDTO.getId());
+                queueResponse.setStatus(queueUserDetailsDTO.getStatus());
+//                queueResponse.setUserId(queueUserDetailsDTO);
+                queueResponse.setAppliedDate(queueUserDetailsDTO.getAppliedDate());
+                queueResponse.setEndDate(null);
+                queueResponse.setCourseName(queueUserDetailsDTO.getCourse().getName());
+                result.add(queueResponse);
+            }
         }
         return result;
     }
